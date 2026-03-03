@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  # Teste básico: Nginx servindo página HTML
+  hello-world:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./docs/hello.html:/usr/share/nginx/html/index.html

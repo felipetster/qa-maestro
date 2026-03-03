@@ -1,0 +1,29 @@
+# Node
+node_modules/
+npm-debug.log
+package-lock.json
+
+# Env
+.env
+.env.local
+
+# Docker
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Reports
+reports/
+screenshots/
+videos/
+
+# Python
+__pycache__/
+*.pyc
+venv/
