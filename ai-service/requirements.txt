@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+httpx
+python-dotenv
+pydantic
+psycopg2-binary==2.9.9
+requests==2.31.0

@@ -1,10 +1,116 @@
-version: '3.8'
-
 services:
-  # Teste básico: Nginx servindo página HTML
-  hello-world:
-    image: nginx:alpine
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: qa_maestro
+      POSTGRES_USER: qauser
+      POSTGRES_PASSWORD: qapass123
     ports:
-      - "8080:80"
+      - "5432:5432"
     volumes:
-      - ./docs/hello.html:/usr/share/nginx/html/index.html
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - qa-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U qauser -d qa_maestro"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # App To-Do
+  todo-app:
+    build: ./microservices-demo/todo-app
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./microservices-demo/todo-app:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    networks:
+      - qa-network
+
+  # Report Service (API)
+  report-service:
+    build: ./report-service
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://qauser:qapass123@postgres:5432/qa_maestro
+      - AI_SERVICE_URL=http://ai-service:8000
+      - NODE_ENV=development
+    networks:
+      - qa-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./report-service:/app
+      - /app/node_modules
+
+  # AI Service
+ # AI Service
+  ai-service:
+    build: ./ai-service
+    container_name: qa-maestro-ai
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://qauser:qapass123@postgres:5432/qa_maestro
+      - OLLAMA_HOST=http://host.docker.internal:11434
+    volumes:
+      - ./ai-service:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - qa-network
+    restart: unless-stopped
+  # Dashboard React (NOVO - Fase 3)
+  dashboard:
+    build: ./dashboard
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:3001
+      - VITE_AI_URL=http://localhost:8000
+    networks:
+      - qa-network
+    volumes:
+      - ./dashboard:/app
+      - /app/node_modules
+    depends_on:
+      - report-service
+      - ai-service
+
+  # Cypress Test Runner
+  cypress:
+    image: cypress/included:13.6.2
+    depends_on:
+      - todo-app
+      - report-service
+      - ai-service
+    environment:
+      - CYPRESS_baseUrl=http://todo-app:5173
+      - REPORT_API_URL=http://report-service:3001
+      - AI_SERVICE_URL=http://ai-service:8000
+    working_dir: /e2e
+    volumes:
+      - ./microservices-demo/todo-app/cypress:/e2e/cypress
+      - ./microservices-demo/todo-app/cypress.config.js:/e2e/cypress.config.js
+      - ./test-results:/e2e/cypress/results
+      - ./test-results/videos:/e2e/cypress/videos
+      - ./test-results/screenshots:/e2e/cypress/screenshots
+    networks:
+      - qa-network
+    entrypoint: [""]
+    command: ["tail", "-f", "/dev/null"]
+
+networks:
+  qa-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

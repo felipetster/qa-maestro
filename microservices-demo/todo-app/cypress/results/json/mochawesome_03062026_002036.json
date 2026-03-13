@@ -1,0 +1,260 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 8,
+    "passes": 3,
+    "pending": 0,
+    "failures": 5,
+    "start": "2026-03-06T03:20:12.422Z",
+    "end": "2026-03-06T03:20:36.692Z",
+    "duration": 24270,
+    "testsRegistered": 8,
+    "passPercent": 37.5,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "fa9a0bb4-7067-41d7-93a2-1a967bd7506d",
+      "title": "",
+      "fullFile": "cypress\\e2e\\todo.cy.js",
+      "file": "cypress\\e2e\\todo.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "851d0231-c98f-43d8-b1f9-cee98d0afd73",
+          "title": "QA Maestro - Task Manager Tests",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "TC001 - Should load the application correctly",
+              "fullTitle": "QA Maestro - Task Manager Tests TC001 - Should load the application correctly",
+              "timedOut": null,
+              "duration": 992,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('QA Maestro').should('be.visible');\ncy.get('[data-cy=\"task-input\"]').should('be.visible');\ncy.get('[data-cy=\"add-button\"]').should('be.visible');",
+              "err": {},
+              "uuid": "a94a39c1-c5dd-46d6-b881-7c6a49bf5d0b",
+              "parentUUID": "851d0231-c98f-43d8-b1f9-cee98d0afd73",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC002 - Should add a new task",
+              "fullTitle": "QA Maestro - Task Manager Tests TC002 - Should add a new task",
+              "timedOut": null,
+              "duration": 1046,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const newTask = 'Test authentication flow';\ncy.get('[data-cy=\"task-input\"]').type(newTask);\ncy.get('[data-cy=\"add-button\"]').click();\ncy.get('[data-cy=\"task-item\"]').last().within(() => {\n  cy.get('[data-cy=\"task-title\"]').should('contain', newTask);\n});\ncy.get('[data-cy=\"task-input\"]').should('have.value', '');",
+              "err": {},
+              "uuid": "feca149b-dee4-435c-a633-12bc1fa24ec3",
+              "parentUUID": "851d0231-c98f-43d8-b1f9-cee98d0afd73",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC003 - Should complete a task",
+              "fullTitle": "QA Maestro - Task Manager Tests TC003 - Should complete a task",
+              "timedOut": null,
+              "duration": 4213,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('[data-cy=\"task-item\"]').first().within(() => {\n  cy.get('[data-cy=\"task-checkbox\"]').should('not.be.checked');\n  cy.get('[data-cy=\"task-checkbox\"]').check();\n  cy.get('[data-cy=\"task-checkbox\"]').should('be.checked');\n});",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=\"task-item\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=\"task-item\"]`, but never found it.\n    at Context.eval (webpack://todo-app/./cypress/e2e/todo.cy.js:29:7)",
+                "diff": null
+              },
+              "uuid": "2a9a0e47-122a-4439-933a-fa2ca352439d",
+              "parentUUID": "851d0231-c98f-43d8-b1f9-cee98d0afd73",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC004 - Should delete a task",
+              "fullTitle": "QA Maestro - Task Manager Tests TC004 - Should delete a task",
+              "timedOut": null,
+              "duration": 4165,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('[data-cy=\"task-item\"]').then($items => {\n  const countBefore = $items.length;\n  cy.get('[data-cy=\"task-item\"]').first().within(() => {\n    cy.get('[data-cy=\"delete-button\"]').click();\n  });\n  cy.get('[data-cy=\"task-item\"]').should('have.length', countBefore - 1);\n});",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=\"task-item\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=\"task-item\"]`, but never found it.\n    at Context.eval (webpack://todo-app/./cypress/e2e/todo.cy.js:37:7)",
+                "diff": null
+              },
+              "uuid": "2f0af378-b758-4e06-9d3a-3fb4672709bb",
+              "parentUUID": "851d0231-c98f-43d8-b1f9-cee98d0afd73",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC005 - Should clear completed tasks",
+              "fullTitle": "QA Maestro - Task Manager Tests TC005 - Should clear completed tasks",
+              "timedOut": null,
+              "duration": 4179,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Marca primeira tarefa como concluída\ncy.get('[data-cy=\"task-item\"]').first().within(() => {\n  cy.get('[data-cy=\"task-checkbox\"]').check();\n});\n// Clica \"Clear completed\"\ncy.get('[data-cy=\"clear-completed\"]').click();\n// Verifica que não há mais tarefas concluídas\ncy.get('[data-cy=\"task-item\"]').should('not.have.class', 'completed');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=\"task-item\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=\"task-item\"]`, but never found it.\n    at Context.eval (webpack://todo-app/./cypress/e2e/todo.cy.js:50:7)",
+                "diff": null
+              },
+              "uuid": "ea71f96d-1214-4eed-ad49-c6810ea2a61f",
+              "parentUUID": "851d0231-c98f-43d8-b1f9-cee98d0afd73",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC006 - Should add task using Enter key",
+              "fullTitle": "QA Maestro - Task Manager Tests TC006 - Should add task using Enter key",
+              "timedOut": null,
+              "duration": 741,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const newTask = 'Task via Enter key';\ncy.get('[data-cy=\"task-input\"]').type(`${newTask}{enter}`);\ncy.get('[data-cy=\"task-item\"]').last().within(() => {\n  cy.get('[data-cy=\"task-title\"]').should('contain', newTask);\n});",
+              "err": {},
+              "uuid": "596d72a6-d29c-4253-99d6-e5a504d13d7c",
+              "parentUUID": "851d0231-c98f-43d8-b1f9-cee98d0afd73",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC007 - Should update remaining tasks counter",
+              "fullTitle": "QA Maestro - Task Manager Tests TC007 - Should update remaining tasks counter",
+              "timedOut": null,
+              "duration": 4518,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Verifica contador inicial\ncy.get('[data-cy=\"remaining-count\"]').should('exist');\n// Marca uma como concluída\ncy.get('[data-cy=\"task-item\"]').first().within(() => {\n  cy.get('[data-cy=\"task-checkbox\"]').check();\n});\n// Verifica que contador mudou\ncy.get('[data-cy=\"remaining-count\"]').should('contain', '1');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=\"task-item\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=\"task-item\"]`, but never found it.\n    at Context.eval (webpack://todo-app/./cypress/e2e/todo.cy.js:76:7)",
+                "diff": null
+              },
+              "uuid": "a6f9ec6f-b899-4ca7-b156-34f7b5c539c7",
+              "parentUUID": "851d0231-c98f-43d8-b1f9-cee98d0afd73",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC008 - Should not add empty task",
+              "fullTitle": "QA Maestro - Task Manager Tests TC008 - Should not add empty task",
+              "timedOut": null,
+              "duration": 4169,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('[data-cy=\"task-item\"]').then($items => {\n  const countBefore = $items.length;\n  cy.get('[data-cy=\"add-button\"]').click();\n  cy.get('[data-cy=\"task-item\"]').should('have.length', countBefore);\n});",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=\"task-item\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=\"task-item\"]`, but never found it.\n    at Context.eval (webpack://todo-app/./cypress/e2e/todo.cy.js:85:7)",
+                "diff": null
+              },
+              "uuid": "1b268a2a-3fe1-47b6-ac4b-54e135b4cbb9",
+              "parentUUID": "851d0231-c98f-43d8-b1f9-cee98d0afd73",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "a94a39c1-c5dd-46d6-b881-7c6a49bf5d0b",
+            "feca149b-dee4-435c-a633-12bc1fa24ec3",
+            "596d72a6-d29c-4253-99d6-e5a504d13d7c"
+          ],
+          "failures": [
+            "2a9a0e47-122a-4439-933a-fa2ca352439d",
+            "2f0af378-b758-4e06-9d3a-3fb4672709bb",
+            "ea71f96d-1214-4eed-ad49-c6810ea2a61f",
+            "a6f9ec6f-b899-4ca7-b156-34f7b5c539c7",
+            "1b268a2a-3fe1-47b6-ac4b-54e135b4cbb9"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 24023,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/results/json",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "timestamp": "mmddyyyy_HHMMss"
+      },
+      "version": "6.3.2"
+    }
+  }
+}

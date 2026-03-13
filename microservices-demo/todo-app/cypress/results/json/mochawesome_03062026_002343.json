@@ -1,0 +1,290 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 10,
+    "passes": 7,
+    "pending": 0,
+    "failures": 3,
+    "start": "2026-03-06T03:23:22.316Z",
+    "end": "2026-03-06T03:23:43.190Z",
+    "duration": 20874,
+    "testsRegistered": 10,
+    "passPercent": 70,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "ec13196a-0623-436d-8f8a-29010e4003c4",
+      "title": "",
+      "fullFile": "cypress\\e2e\\todo.cy.js",
+      "file": "cypress\\e2e\\todo.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "77181c50-7be7-4b4c-9106-c6821da0a071",
+          "title": "QA Maestro - Task Manager Tests",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "TC001 - Should load the application correctly",
+              "fullTitle": "QA Maestro - Task Manager Tests TC001 - Should load the application correctly",
+              "timedOut": null,
+              "duration": 1066,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('QA Maestro').should('be.visible');\ncy.get('[data-cy=\"task-input\"]').should('be.visible');\ncy.get('[data-cy=\"add-button\"]').should('be.visible');",
+              "err": {},
+              "uuid": "3ba4b66b-c065-4a04-b26e-9f0bfd5706f5",
+              "parentUUID": "77181c50-7be7-4b4c-9106-c6821da0a071",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC002 - Should add a new task",
+              "fullTitle": "QA Maestro - Task Manager Tests TC002 - Should add a new task",
+              "timedOut": null,
+              "duration": 1263,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const newTask = 'Test authentication flow on staging';\ncy.get('[data-cy=\"task-input\"]').type(newTask);\ncy.get('[data-cy=\"add-button\"]').click();\ncy.get('[data-cy=\"task-item\"]').first().within(() => {\n  cy.get('[data-cy=\"task-title\"]').should('contain', newTask);\n});\ncy.get('[data-cy=\"task-input\"]').should('have.value', '');",
+              "err": {},
+              "uuid": "5f9ec065-b2df-4c3c-8d2b-d5d6bdfd445c",
+              "parentUUID": "77181c50-7be7-4b4c-9106-c6821da0a071",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC003 - Should complete a task",
+              "fullTitle": "QA Maestro - Task Manager Tests TC003 - Should complete a task",
+              "timedOut": null,
+              "duration": 835,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Adiciona task primeiro\ncy.get('[data-cy=\"task-input\"]').type('Task to complete{enter}');\n// Marca como completa\ncy.get('[data-cy=\"task-item\"]').first().within(() => {\n  cy.get('[data-cy=\"task-checkbox\"]').should('not.be.checked');\n  cy.get('[data-cy=\"task-checkbox\"]').check();\n  cy.get('[data-cy=\"task-checkbox\"]').should('be.checked');\n});",
+              "err": {},
+              "uuid": "4281799e-c7c1-4cc9-933b-a4d640acbcfe",
+              "parentUUID": "77181c50-7be7-4b4c-9106-c6821da0a071",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC004 - Should delete a task",
+              "fullTitle": "QA Maestro - Task Manager Tests TC004 - Should delete a task",
+              "timedOut": null,
+              "duration": 960,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Adiciona task primeiro\ncy.get('[data-cy=\"task-input\"]').type('Task to delete{enter}');\n// Conta tasks antes\ncy.get('[data-cy=\"task-item\"]').then($items => {\n  const countBefore = $items.length;\n  // Deleta primeira\n  cy.get('[data-cy=\"task-item\"]').first().within(() => {\n    cy.get('[data-cy=\"delete-button\"]').click();\n  });\n  // Verifica que tem 1 a menos\n  cy.get('[data-cy=\"task-item\"]').should('have.length', countBefore - 1);\n});",
+              "err": {},
+              "uuid": "a97a5891-af80-4105-960c-bd1b5a1aad62",
+              "parentUUID": "77181c50-7be7-4b4c-9106-c6821da0a071",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC005 - Should clear completed tasks",
+              "fullTitle": "QA Maestro - Task Manager Tests TC005 - Should clear completed tasks",
+              "timedOut": null,
+              "duration": 1231,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Adiciona 2 tasks\ncy.get('[data-cy=\"task-input\"]').type('Task 1{enter}');\ncy.get('[data-cy=\"task-input\"]').type('Task 2{enter}');\n// Marca ambas como completas\ncy.get('[data-cy=\"task-item\"]').eq(0).within(() => {\n  cy.get('[data-cy=\"task-checkbox\"]').check();\n});\ncy.get('[data-cy=\"task-item\"]').eq(1).within(() => {\n  cy.get('[data-cy=\"task-checkbox\"]').check();\n});\n// Clica \"Clear completed\"\ncy.get('[data-cy=\"clear-completed\"]').click();\n// Verifica que todas completas foram removidas\ncy.get('[data-cy=\"task-item\"]').should('not.exist');",
+              "err": {},
+              "uuid": "c4d53a89-a1b3-4328-8870-d8803212a734",
+              "parentUUID": "77181c50-7be7-4b4c-9106-c6821da0a071",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC006 - Should add task using Enter key",
+              "fullTitle": "QA Maestro - Task Manager Tests TC006 - Should add task using Enter key",
+              "timedOut": null,
+              "duration": 757,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const newTask = 'Task via Enter key';\ncy.get('[data-cy=\"task-input\"]').type(`${newTask}{enter}`);\ncy.get('[data-cy=\"task-item\"]').first().within(() => {\n  cy.get('[data-cy=\"task-title\"]').should('contain', newTask);\n});",
+              "err": {},
+              "uuid": "555e66a3-a475-4610-afb6-744e2a562805",
+              "parentUUID": "77181c50-7be7-4b4c-9106-c6821da0a071",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC007 - Should update remaining tasks counter",
+              "fullTitle": "QA Maestro - Task Manager Tests TC007 - Should update remaining tasks counter",
+              "timedOut": null,
+              "duration": 4304,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Limpa tudo primeiro\ncy.get('[data-cy=\"task-item\"]').then($items => {\n  if ($items.length > 0) {\n    // Marca todas como completas\n    cy.get('[data-cy=\"task-checkbox\"]').check({\n      multiple: true\n    });\n    // Limpa completas\n    cy.get('[data-cy=\"clear-completed\"]').click();\n  }\n});\n// Adiciona 2 tasks novas\ncy.get('[data-cy=\"task-input\"]').type('Task 1{enter}');\ncy.get('[data-cy=\"task-input\"]').type('Task 2{enter}');\n// Verifica contador inicial\ncy.get('[data-cy=\"remaining-count\"]').should('contain', '2 tasks remaining');\n// Marca uma como completa\ncy.get('[data-cy=\"task-item\"]').first().within(() => {\n  cy.get('[data-cy=\"task-checkbox\"]').check();\n});\n// Verifica contador atualizado\ncy.get('[data-cy=\"remaining-count\"]').should('contain', '1 task remaining');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=\"task-item\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=\"task-item\"]`, but never found it.\n    at Context.eval (webpack://todo-app/./cypress/e2e/todo.cy.js:90:7)",
+                "diff": null
+              },
+              "uuid": "dcd4ffdf-839d-4c5d-b30e-e7e9039d87b1",
+              "parentUUID": "77181c50-7be7-4b4c-9106-c6821da0a071",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC008 - Should not add empty task",
+              "fullTitle": "QA Maestro - Task Manager Tests TC008 - Should not add empty task",
+              "timedOut": null,
+              "duration": 4577,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Tenta adicionar vazio\ncy.get('[data-cy=\"add-button\"]').click();\n// Verifica que erro aparece\ncy.contains('Task title is required').should('be.visible');\n// Tenta com espaços apenas\ncy.get('[data-cy=\"task-input\"]').type('   ');\ncy.get('[data-cy=\"add-button\"]').click();\ncy.contains('Task title is required').should('be.visible');",
+              "err": {
+                "message": "CypressError: Timed out retrying after 4050ms: `cy.click()` failed because this element is `disabled`:\n\n`<button type=\"submit\" class=\"add-button\" data-cy=\"add-button\" disabled=\"\">Add Task</button>`\n\nFix this problem, or use `{force: true}` to disable error checking.\n\nhttps://on.cypress.io/element-cannot-be-interacted-with",
+                "estack": "CypressError: Timed out retrying after 4050ms: `cy.click()` failed because this element is `disabled`:\n\n`<button type=\"submit\" class=\"add-button\" data-cy=\"add-button\" disabled=\"\">Add Task</button>`\n\nFix this problem, or use `{force: true}` to disable error checking.\n\nhttps://on.cypress.io/element-cannot-be-interacted-with\n    at Object.isNotDisabled (http://localhost:5173/__cypress/runner/cypress_runner.js:144923:58)\n    at runAllChecks (http://localhost:5173/__cypress/runner/cypress_runner.js:113250:26)\n    at retryActionability (http://localhost:5173/__cypress/runner/cypress_runner.js:113339:16)\n    at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1830:23)\n    at Promise.attempt.Promise.try (http://localhost:5173/__cypress/runner/cypress_runner.js:4338:29)\n    at whenStable (http://localhost:5173/__cypress/runner/cypress_runner.js:143744:68)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:143685:14)\n    at tryCatcher (http://localhost:5173/__cypress/runner/cypress_runner.js:1830:23)\n    at Promise._settlePromiseFromHandler (http://localhost:5173/__cypress/runner/cypress_runner.js:1542:31)\n    at Promise._settlePromise (http://localhost:5173/__cypress/runner/cypress_runner.js:1599:18)\n    at Promise._settlePromise0 (http://localhost:5173/__cypress/runner/cypress_runner.js:1644:10)\n    at Promise._settlePromises (http://localhost:5173/__cypress/runner/cypress_runner.js:1724:18)\n    at Promise._fulfill (http://localhost:5173/__cypress/runner/cypress_runner.js:1668:18)\n    at <unknown> (http://localhost:5173/__cypress/runner/cypress_runner.js:5473:46)\nFrom Your Spec Code:\n    at Context.eval (webpack://todo-app/./cypress/e2e/todo.cy.js:117:37)",
+                "diff": null
+              },
+              "uuid": "4b09d910-371c-4cfa-a493-b735ad3c2330",
+              "parentUUID": "77181c50-7be7-4b4c-9106-c6821da0a071",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC009 - Should prevent duplicate tasks",
+              "fullTitle": "QA Maestro - Task Manager Tests TC009 - Should prevent duplicate tasks",
+              "timedOut": null,
+              "duration": 1434,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const taskName = 'Duplicate test task';\n// Adiciona primeira vez\ncy.get('[data-cy=\"task-input\"]').type(`${taskName}{enter}`);\ncy.contains(taskName).should('be.visible');\n// Tenta adicionar de novo\ncy.get('[data-cy=\"task-input\"]').type(`${taskName}{enter}`);\n// Verifica que erro aparece\ncy.contains('Task already exists').should('be.visible');",
+              "err": {},
+              "uuid": "4f8e5300-b47e-42bb-9bb2-6a86232303e3",
+              "parentUUID": "77181c50-7be7-4b4c-9106-c6821da0a071",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC010 - Should filter tasks by status",
+              "fullTitle": "QA Maestro - Task Manager Tests TC010 - Should filter tasks by status",
+              "timedOut": null,
+              "duration": 4155,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Limpa tudo primeiro\ncy.get('[data-cy=\"task-item\"]').then($items => {\n  if ($items.length > 0) {\n    cy.get('[data-cy=\"task-checkbox\"]').check({\n      multiple: true\n    });\n    cy.get('[data-cy=\"clear-completed\"]').click();\n  }\n});\n// Adiciona 3 tasks\ncy.get('[data-cy=\"task-input\"]').type('Active task 1{enter}');\ncy.get('[data-cy=\"task-input\"]').type('Active task 2{enter}');\ncy.get('[data-cy=\"task-input\"]').type('Task to complete{enter}');\n// Marca última como completa\ncy.get('[data-cy=\"task-item\"]').first().within(() => {\n  cy.get('[data-cy=\"task-checkbox\"]').check();\n});\n// Filtra por \"Active\"\ncy.contains('button', 'Active').click();\ncy.get('[data-cy=\"task-item\"]').should('have.length', 2);\n// Filtra por \"Completed\"\ncy.contains('button', 'Completed').click();\ncy.get('[data-cy=\"task-item\"]').should('have.length', 1);\n// Volta pra \"All\"\ncy.contains('button', 'All').click();\ncy.get('[data-cy=\"task-item\"]').should('have.length', 3);",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=\"task-item\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-cy=\"task-item\"]`, but never found it.\n    at Context.eval (webpack://todo-app/./cypress/e2e/todo.cy.js:145:7)",
+                "diff": null
+              },
+              "uuid": "9f9862da-4e8c-47de-a705-fa4b8d88eace",
+              "parentUUID": "77181c50-7be7-4b4c-9106-c6821da0a071",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "3ba4b66b-c065-4a04-b26e-9f0bfd5706f5",
+            "5f9ec065-b2df-4c3c-8d2b-d5d6bdfd445c",
+            "4281799e-c7c1-4cc9-933b-a4d640acbcfe",
+            "a97a5891-af80-4105-960c-bd1b5a1aad62",
+            "c4d53a89-a1b3-4328-8870-d8803212a734",
+            "555e66a3-a475-4610-afb6-744e2a562805",
+            "4f8e5300-b47e-42bb-9bb2-6a86232303e3"
+          ],
+          "failures": [
+            "dcd4ffdf-839d-4c5d-b30e-e7e9039d87b1",
+            "4b09d910-371c-4cfa-a493-b735ad3c2330",
+            "9f9862da-4e8c-47de-a705-fa4b8d88eace"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 20582,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/results/json",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "timestamp": "mmddyyyy_HHMMss"
+      },
+      "version": "6.3.2"
+    }
+  }
+}
