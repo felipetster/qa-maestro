@@ -316,7 +316,7 @@ Analista de QA | Engenheiro de Qualidade de Software
 
 ---
 
-## Agradecimentos
+## Ferramentas
 
 Construído com:
 - [Ollama](https://ollama.com) para inferência local de LLM
@@ -328,16 +328,3 @@ Construído com:
 
 **Nota**: Este projeto é para fins de demonstração e portfólio. Não é destinado para uso em produção sem hardening adicional de segurança e testes de escalabilidade.
 ```
-
----
-
-## 📝 PRONTO!
-
-Agora você tem:
-```
-✅ README.md (inglês) - profissional e completo
-✅ README.pt-br.md (português) - tradução fiel
-✅ Mesma estrutura e tom em ambos
-✅ Links de navegação entre versões
-✅ Linguagem técnica sem emojis forçados
-✅ Tabelas, comandos e seções organizadas
