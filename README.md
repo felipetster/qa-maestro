@@ -1,3 +1,5 @@
+[Leia em Português](README.pt-br.md)
+
 # QA Maestro
 
 > Engineering Intelligence Platform for automated test analysis and deployment decision support
@@ -26,7 +28,9 @@ The platform addresses a critical bottleneck in software development: **test fai
 
 ---
 
-## Architecture┌─────────────────────────────────────────────────────────────┐
+## Architecture
+```
+┌─────────────────────────────────────────────────────────────┐
 │                    QA MAESTRO PLATFORM                       │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
@@ -50,6 +54,7 @@ The platform addresses a critical bottleneck in software development: **test fai
 │  └──────────────┘   └──────────────┘                       │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
+```
 
 ### Technology Stack
 
@@ -112,16 +117,28 @@ Historical analysis of test execution:
 - **LLaMA 3.2 3B model** pulled: `ollama pull llama3.2:3b`
 
 ### Installation
-```bash1. Clone repository
+```bash
+# 1. Clone repository
 git clone https://github.com/felipetster/qa-maestro.git
-cd qa-maestro2. Start all services
-docker-compose up -d3. Wait for services to be ready (30-60s)
-docker-compose logs -f4. Access dashboard
-http://localhost:3000
+cd qa-maestro
+
+# 2. Start all services
+docker-compose up -d
+
+# 3. Wait for services to be ready (30-60s)
+docker-compose logs -f
+
+# 4. Access dashboard
+# http://localhost:3000
+```
 
 ### Generate Test Data
-```bashRun Cypress E2E suite to populate dashboard
-docker-compose run --rm cypress npx cypress runThis creates a new test run with ~30 test cases
+```bash
+# Run Cypress E2E suite to populate dashboard
+docker-compose run --rm cypress npx cypress run
+
+# This creates a new test run with ~30 test cases
+```
 
 ### Service Endpoints
 - **Dashboard**: http://localhost:3000
@@ -150,19 +167,31 @@ The **Test Stability Map** shows which tests are reliable vs. flaky, helping pri
 ## Configuration
 
 ### Environment Variables
-```bashReport Service
-DATABASE_URL=postgresql://qauser:qapass123@postgres:5432/qa_maestroAI Service
+```bash
+# Report Service
+DATABASE_URL=postgresql://qauser:qapass123@postgres:5432/qa_maestro
+
+# AI Service
 OLLAMA_HOST=http://host.docker.internal:11434
 OLLAMA_NUM_PARALLEL=4
+```
 
 ### Ollama Performance Tuning
-```bashCPU-optimized (default)
-ollama pull llama3.2:3b  # Faster inferenceHigher quality (slower)
-ollama pull llama3.1:8b  # Better analysisUpdate ai-service/src/main.py to change model
+```bash
+# CPU-optimized (default)
+ollama pull llama3.2:3b  # Faster inference
+
+# Higher quality (slower)
+ollama pull llama3.1:8b  # Better analysis
+
+# Update ai-service/src/main.py to change model
+```
 
 ---
 
-## Project Structureqa-maestro/
+## Project Structure
+```
+qa-maestro/
 ├── dashboard/              # React frontend
 │   ├── src/
 │   │   ├── components/     # UI components
@@ -187,29 +216,44 @@ ollama pull llama3.1:8b  # Better analysisUpdate ai-service/src/main.py to chang
 │       └── todo.cy.js      # 10 test cases
 ├── docker-compose.yml      # Orchestration
 └── README.md
+```
 
 ---
 
 ## Troubleshooting
 
 ### Dashboard shows 0 for Release Confidence
-```bashCheck if database has test runs
-docker exec -it qa-maestro-db psql -U qauser -d qa_maestro 
--c "SELECT COUNT(*) FROM test_runs;"If count is 0, generate data
+```bash
+# Check if database has test runs
+docker exec -it qa-maestro-db psql -U qauser -d qa_maestro \
+  -c "SELECT COUNT(*) FROM test_runs;"
+
+# If count is 0, generate data
 docker-compose run --rm cypress npx cypress run
+```
 
 ### AI Analysis times out
-```bashCheck Ollama is running
-curl http://localhost:11434/api/tagsVerify model is loaded
-ollama listPull smaller model for faster inference
+```bash
+# Check Ollama is running
+curl http://localhost:11434/api/tags
+
+# Verify model is loaded
+ollama list
+
+# Pull smaller model for faster inference
 ollama pull llama3.2:1b
+```
 
 ### Services won't start
-```bashClean restart
+```bash
+# Clean restart
 docker-compose down -v
 docker-compose build --no-cache
-docker-compose up -dView logs
+docker-compose up -d
+
+# View logs
 docker-compose logs -f
+```
 
 ---
 
