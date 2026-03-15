@@ -1,91 +1,269 @@
-[Leia em Português](README.pt-br.md)
-
 # QA Maestro
 
-> Engineering Intelligence platform with AI-powered test analysis and real-time observability dashboard.
+> Engineering Intelligence Platform for automated test analysis and deployment decision support
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Docker](https://img.shields.io/badge/docker-compose-2496ED?logo=docker)
-![React](https://img.shields.io/badge/react-18.2-61DAFB?logo=react)
-![Node.js](https://img.shields.io/badge/node.js-20-339933?logo=node.js)
-![Python](https://img.shields.io/badge/python-3.11-3776AB?logo=python)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Docker](https://img.shields.io/badge/docker-compose-2496ED?logo=docker&logoColor=white)](docker-compose.yml)
+[![React](https://img.shields.io/badge/react-18.2-61DAFB?logo=react&logoColor=white)](https://reactjs.org/)
+[![Node.js](https://img.shields.io/badge/node.js-20-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Python](https://img.shields.io/badge/python-3.11-3776AB?logo=python&logoColor=white)](https://python.org/)
 
-QA Maestro is a personal portfolio project I developed to explore how we can use Artificial Intelligence (LLMs) and observability to solve one of the biggest bottlenecks in software development: analyzing failed tests.
+---
 
-## What it was designed to do
-The core idea was born from a real pain point: reading automated test logs (like Cypress) is a slow and tedious process. When a pipeline breaks, developers and QAs spend too much time trying to figure out if the failure was a real bug, a flaky test, or an infrastructure issue.
+## Overview
 
-QA Maestro acts as an observability layer on top of executed tests. The goal is for the tool to read raw results, calculate the risk level of a deploy (Release Confidence), and use AI to not just tell you *where* it failed, but *why* it failed and *how* to fix it.
+QA Maestro is an Engineering Intelligence Platform that transforms raw test execution data into actionable deployment insights. Built as a portfolio project, it demonstrates enterprise-grade architecture patterns, AI integration, and modern observability practices.
 
-## Architecture
+The platform addresses a critical bottleneck in software development: **test failure analysis**. Instead of manually reviewing logs, QA Maestro uses AI-powered diagnostics to identify root causes, detect patterns, and recommend specific recovery actions.
 
-```text
-┌─────────────────────────────────────────────┐
-│            QA MAESTRO PLATFORM              │
-├─────────────────────────────────────────────┤
-│                                             │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
-│  │ Frontend │→ │ Reports  │→ │ AI Engine│   │
-│  │  React   │  │  Node.js │  │  Python  │   │
-│  └──────────┘  └──────────┘  └──────────┘   │
-│                      ↓             ↓        │
-│                ┌──────────────┐ ┌─────────┐ │
-│                │  PostgreSQL  │ │ Ollama  │ │
-│                └──────────────┘ └─────────┘ │
-└─────────────────────────────────────────────┘
-What it does today
-Currently, the project functions as a complete dashboard built with a microservices architecture. The main active features are:
+### Key Differentiators
 
-AI Diagnostic Engine: Integration with a local model (LLaMA 3.1 via Ollama) that analyzes test error messages, clusters failure patterns, and generates a Technical Recovery Plan.
+- **Release Confidence Score**: Algorithmic deployment risk assessment based on test stability, pass rate, and performance metrics
+- **AI Diagnostic Engine**: LLM-powered root cause analysis with technical recovery plans
+- **Pattern Detection**: Automatic clustering of failures by error taxonomy (UI timing, API state, selector mutations)
+- **Test Stability Mapping**: Visual identification of flaky vs. stable tests with Flaky Test Index calculation
+- **Bilingual Interface**: Native support for English and Brazilian Portuguese
 
-Release Confidence: An algorithm that calculates the health of the test suite, penalizing flaky tests, blocking failures, and performance degradation.
+---
 
-Test Stability Map: Visual mapping that separates stable tests from flaky ones.
+## Architecture┌─────────────────────────────────────────────────────────────┐
+│                    QA MAESTRO PLATFORM                       │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌──────────────┐   ┌───────────────┐   ┌──────────────┐  │
+│  │   Dashboard  │──▶│ Report Service│──▶│  AI Service  │  │
+│  │   React 18   │   │  Express API  │   │   FastAPI    │  │
+│  │   Port 3000  │   │   Port 3001   │   │   Port 8000  │  │
+│  └──────────────┘   └───────────────┘   └──────────────┘  │
+│         │                   │                    │          │
+│         │                   ▼                    ▼          │
+│         │            ┌──────────────┐    ┌─────────────┐   │
+│         │            │  PostgreSQL  │    │   Ollama    │   │
+│         │            │   Port 5432  │    │  Port 11434 │   │
+│         │            └──────────────┘    └─────────────┘   │
+│         │                                                   │
+│         ▼                                                   │
+│  ┌──────────────┐   ┌──────────────┐                       │
+│  │  Todo App    │──▶│   Cypress    │                       │
+│  │  (Demo SUT)  │   │  E2E Suite   │                       │
+│  │  Port 5173   │   │  10 tests    │                       │
+│  └──────────────┘   └──────────────┘                       │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
 
-Technical & Bilingual Design: Interface with a brutalist/engineering design and native internationalization support (English and Brazilian Portuguese).
+### Technology Stack
 
-Tech Stack
-Frontend: React 18, Vite, Context API, JetBrains Mono typography.
+| Component | Technology | Purpose |
+|-----------|-----------|---------|
+| **Frontend** | React 18 + Vite | Dashboard UI with real-time metrics |
+| **Report API** | Node.js + Express | Test data aggregation and metrics calculation |
+| **AI Service** | Python + FastAPI | LLM orchestration and analysis engine |
+| **Database** | PostgreSQL 15 | Persistent storage for test runs and analysis |
+| **AI Model** | Ollama (LLaMA 3.2 3B) | Local inference for cost-effective diagnostics |
+| **E2E Testing** | Cypress 13 | Demonstration test suite |
+| **Container Orchestration** | Docker Compose | Multi-service deployment |
 
-Backend: Node.js / Express (Report API) to manage metrics.
+---
 
-AI Service: Python / FastAPI orchestrating calls to Ollama (LLaMA 3.1 8B).
+## Features
 
-Database: PostgreSQL 15.
+### 1. Release Confidence Score
+Algorithmic calculation of deployment readiness based on:
+- **Pass Rate** (40% weight): Percentage of passing tests
+- **Stability Score** (35% weight): Variance analysis across recent runs
+- **Performance Score** (25% weight): Execution time regression detection
 
-Testing: Cypress 13.
+**Output**: 0-100 score with risk level (LOW/MEDIUM/HIGH/CRITICAL) and estimated time to green.
 
-DevOps: Docker & Docker Compose.
+### 2. AI Diagnostic Engine
+Powered by LLaMA 3.2 3B running locally via Ollama:
+- **Failure Classification**: Taxonomy-based categorization (UI_Timing, API_State_Mismatch, Selector_Mutation, etc.)
+- **Evidence Extraction**: Specific data points supporting the diagnosis
+- **Technical Recovery Plan**: Step-by-step remediation instructions
+- **Confidence Scoring**: Probabilistic assessment of diagnosis accuracy
 
-Quick Start
-Prerequisite: Ensure you have Docker Desktop and Ollama running locally (with the llama3.1:8b model pulled).
+### 3. Test Stability Map
+Visual representation of test suite health:
+- **Stable Tests**: Consistent pass/fail behavior
+- **Flaky Tests**: Intermittent failures across runs
+- **Failing Tests**: Consistent failures
+- **Flaky Test Index**: Percentage-based risk metric
 
-Bash
-# 1. Clone the repository
-git clone [https://github.com/felipetster/qa-maestro.git](https://github.com/felipetster/qa-maestro.git)
-cd qa-maestro
+### 4. Failure Pattern Detection
+Automatic clustering of failures by:
+- Error message similarity
+- Affected test file patterns
+- Temporal correlation
+- Suggested fixes per cluster
 
-# 2. Start all microservices
-docker-compose up -d
+### 5. Performance Trends
+Historical analysis of test execution:
+- Duration tracking per run
+- Performance degradation alerts
+- Baseline comparison
 
-# 3. Access the dashboard
-# http://localhost:3000
-Future Improvements (Roadmap)
-Like any portfolio project, it is constantly evolving. The next steps include:
+---
 
-100% Dynamic Translation: Ensure that all responses coming from the backend and AI are perfectly translated according to the user's preference without static keys.
+## Quick Start
 
-Run Customization: Allow renaming "Test Runs" (e.g., changing from "run-001" to "Release v2.4") for better organization.
+### Prerequisites
+- **Docker Desktop** (with Docker Compose)
+- **Ollama** running locally ([installation guide](https://ollama.com))
+- **LLaMA 3.2 3B model** pulled: `ollama pull llama3.2:3b`
 
-AI Optimization: Refine prompt engineering and improve log chunking to avoid exceeding the AI's token limit during massive failures.
+### Installation
+```bash1. Clone repository
+git clone https://github.com/felipetster/qa-maestro.git
+cd qa-maestro2. Start all services
+docker-compose up -d3. Wait for services to be ready (30-60s)
+docker-compose logs -f4. Access dashboard
+http://localhost:3000
 
-CI/CD Webhooks: Create endpoints to receive real payloads directly from GitHub Actions or GitLab CI.
+### Generate Test Data
+```bashRun Cypress E2E suite to populate dashboard
+docker-compose run --rm cypress npx cypress runThis creates a new test run with ~30 test cases
 
-Author
-Felipe Castro
+### Service Endpoints
+- **Dashboard**: http://localhost:3000
+- **Report API**: http://localhost:3001/health
+- **AI Service**: http://localhost:8000/health
+- **Demo App**: http://localhost:5173
 
-GitHub: @felipetster
+---
 
-LinkedIn: linkedin.com/in/felipetster
+## Usage
 
-Email: felipe.c.lima1604@gmail.com
+### 1. View Release Confidence
+Navigate to the **Home** page to see the current deployment readiness score.
+
+### 2. Analyze Test Runs
+Go to **Test Runs** to view execution history. Click on any run to see detailed results.
+
+### 3. Generate AI Analysis
+On a run detail page with failures, click **"Run Diagnostic"** to trigger AI-powered root cause analysis. Analysis typically completes in 15-30 seconds on CPU.
+
+### 4. Monitor Stability
+The **Test Stability Map** shows which tests are reliable vs. flaky, helping prioritize test suite maintenance.
+
+---
+
+## Configuration
+
+### Environment Variables
+```bashReport Service
+DATABASE_URL=postgresql://qauser:qapass123@postgres:5432/qa_maestroAI Service
+OLLAMA_HOST=http://host.docker.internal:11434
+OLLAMA_NUM_PARALLEL=4
+
+### Ollama Performance Tuning
+```bashCPU-optimized (default)
+ollama pull llama3.2:3b  # Faster inferenceHigher quality (slower)
+ollama pull llama3.1:8b  # Better analysisUpdate ai-service/src/main.py to change model
+
+---
+
+## Project Structureqa-maestro/
+├── dashboard/              # React frontend
+│   ├── src/
+│   │   ├── components/     # UI components
+│   │   ├── pages/          # Route pages
+│   │   └── styles/         # CSS modules
+│   └── Dockerfile
+├── report-service/         # Node.js API
+│   ├── src/
+│   │   ├── server.js       # Express app
+│   │   └── db.js           # PostgreSQL client
+│   └── Dockerfile
+├── ai-service/             # Python AI engine
+│   ├── src/
+│   │   └── main.py         # FastAPI + Ollama integration
+│   └── Dockerfile
+├── database/
+│   └── init.sql            # Schema + seed data
+├── microservices-demo/
+│   └── todo-app/           # Demo application (SUT)
+├── cypress/                # E2E test suite
+│   └── e2e/
+│       └── todo.cy.js      # 10 test cases
+├── docker-compose.yml      # Orchestration
+└── README.md
+
+---
+
+## Troubleshooting
+
+### Dashboard shows 0 for Release Confidence
+```bashCheck if database has test runs
+docker exec -it qa-maestro-db psql -U qauser -d qa_maestro 
+-c "SELECT COUNT(*) FROM test_runs;"If count is 0, generate data
+docker-compose run --rm cypress npx cypress run
+
+### AI Analysis times out
+```bashCheck Ollama is running
+curl http://localhost:11434/api/tagsVerify model is loaded
+ollama listPull smaller model for faster inference
+ollama pull llama3.2:1b
+
+### Services won't start
+```bashClean restart
+docker-compose down -v
+docker-compose build --no-cache
+docker-compose up -dView logs
+docker-compose logs -f
+
+---
+
+## Development Roadmap
+
+- [ ] **CI/CD Integration**: Webhook endpoints for GitHub Actions / GitLab CI
+- [ ] **Custom Run Naming**: User-defined labels instead of auto-generated IDs
+- [ ] **Historical Trends**: 30-day pass rate and stability charts
+- [ ] **Slack Notifications**: Real-time alerts for critical failures
+- [ ] **API Authentication**: JWT-based access control
+- [ ] **Export Reports**: PDF generation for stakeholder distribution
+
+---
+
+## Known Limitations
+
+- **GPU Support**: AMD GPUs not supported by Ollama on Windows (CPU inference only)
+- **Model Size**: Smaller models (3B parameters) sacrifice analysis depth for speed
+- **Scale**: Optimized for small-to-medium test suites (<500 tests per run)
+- **Language Support**: AI responses currently in English only (UI is bilingual)
+
+---
+
+## Contributing
+
+This is a portfolio project and not actively seeking contributions. However, feedback and suggestions are welcome via Issues.
+
+---
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+---
+
+## Author
+
+**Felipe Castro**  
+QA Analyst | Software Quality Engineer
+
+- GitHub: [@felipetster](https://github.com/felipetster)
+- LinkedIn: [linkedin.com/in/felipetster](https://linkedin.com/in/felipetster)
+- Email: felipe.c.lima1604@gmail.com
+
+---
+
+## Acknowledgments
+
+Built with:
+- [Ollama](https://ollama.com) for local LLM inference
+- [Meta LLaMA](https://ai.meta.com/llama/) for open-source language models
+- [Cypress](https://cypress.io) for E2E testing framework
+- [React](https://reactjs.org) and [Vite](https://vitejs.dev) for frontend tooling
+
+---
+
+**Note**: This project is for demonstration and portfolio purposes. It is not intended for production use without additional security hardening and scalability testing.
