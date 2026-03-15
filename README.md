@@ -268,6 +268,24 @@ docker-compose logs -f
 
 ---
 
+## Development Roadmap (Future Features)
+Like any portfolio project, QA Maestro is constantly evolving. The next steps include:
+
+[ ] 100% Dynamic Translation: Ensure that all edge-case responses coming from the backend and AI are perfectly translated without relying on static keys.
+
+[ ] Run Customization: Allow renaming "Test Runs" (e.g., changing from "run-001" to "Release v2.4 - Hotfix") for better organization.
+
+[ ] AI Optimization & Chunking: Refine prompt engineering and improve log chunking to avoid exceeding the AI's token limit during massive test suite failures.
+
+[ ] CI/CD Webhooks: Create endpoints to receive real payloads directly from GitHub Actions or GitLab CI workflows.
+
+[ ] Historical Trends: 30-day pass rate and stability charts for long-term tracking.
+
+Known Limitations
+Scale: Currently optimized for small-to-medium test suites (<500 tests per run). Large enterprise suites require pagination and chunked AI processing.
+
+GPU Support: AMD GPUs might face issues with Ollama on Windows, falling back to CPU inference (which is slower).
+
 ## Known Limitations
 
 - **GPU Support**: AMD GPUs not supported by Ollama on Windows (CPU inference only)
