@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Rocket, CheckCircle, AlertTriangle, XCircle, Shield } from 'lucide-react';
+// 1. Importando o idioma
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function ReleaseConfidence() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  
+  // 2. Chamando a ferramenta de tradução
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetchConfidence();
@@ -40,7 +45,6 @@ export default function ReleaseConfidence() {
     );
   }
 
-  // A cor baseia-se na confiança (HIGH confidence = success = Verde)
   const getLevelColor = (level) => {
     const colors = {
       HIGH: 'success',
@@ -60,8 +64,46 @@ export default function ReleaseConfidence() {
 
   const levelColor = getLevelColor(data.level);
   
-  // A MÁGICA AQUI: Invertemos a lógica para o texto de risco bater com a nota
-  const riskLevelText = data.confidence >= 80 ? 'LOW' : (data.confidence >= 50 ? 'MEDIUM' : 'HIGH');
+  // Traduzindo a pílula de risco ("HIGH" para "ALTO", etc)
+  const getRiskLevelText = () => {
+    const riskRaw = data.confidence >= 80 ? 'LOW' : (data.confidence >= 50 ? 'MEDIUM' : 'HIGH');
+    if (riskRaw === 'HIGH') return t('high') || 'HIGH';
+    if (riskRaw === 'MEDIUM') return t('medium') || 'MEDIUM';
+    if (riskRaw === 'LOW') return t('low') || 'LOW';
+    return riskRaw;
+  };
+
+  // Função utilitária: Traduz o texto vindo da API se ele existir no nosso dicionário, senão mostra o original.
+  // Criamos pequenas chaves dinâmicas baseadas no texto em inglês.
+  const translateApiText = (text) => {
+    if (!text) return "";
+    
+    const map = {
+      // --- ERROS ---
+      "4 blocking test failures": t('blockingFailuresTitle'),
+      "Prevents production deployment": t('blockingFailuresDesc'),
+      "Pass rate at 60% (target: 90%+)": t('passRateTitle'),
+      "Low test coverage or quality issues": t('passRateDesc'),
+      "Performance degraded 47%": t('perfDegradedTitle'),
+      "Slower test execution": t('perfDegradedDesc'),
+      "2 flaky tests detected": t('flakyDetectedTitle'),
+      "Unpredictable test results": t('flakyDetectedDesc'),
+      "High variance in recent test results": t('highVarianceTitle'),
+      "Inconsistent quality signals": t('highVarianceDesc'),
+      "Do not deploy to production until critical issues are resolved.": t('recommendationDesc1'),
+      
+      // --- SUCESSOS (MÁGICA AQUI) ---
+      "No failures in last run": t('noFailures'),
+      "All tests passing": t('allTestsPassing'),
+      "Excellent pass rate": t('excellentPassRate'),
+      "High quality signal": t('highQualitySignal'),
+      "Safe to deploy. All quality signals are green.": t('safeToDeploy'),
+      "Ready now": t('readyNow'),
+      "today": t('today')
+    };
+    
+    return map[text] || text;
+  };
 
   return (
     <div className={`card release-confidence release-${levelColor}`}>
@@ -69,10 +111,11 @@ export default function ReleaseConfidence() {
       <div className="release-header">
         <div className="release-title">
           <Rocket size={20} />
-          <h3>Release Confidence</h3>
+          {/* TRADUZIDO AQUI */}
+          <h3>{t('releaseConfTitle')}</h3>
         </div>
         <button className="btn btn-secondary btn-sm" onClick={fetchConfidence}>
-          Refresh
+          {t('refresh')}
         </button>
       </div>
 
@@ -84,29 +127,31 @@ export default function ReleaseConfidence() {
 
       {/* Status */}
       <div className={`release-status status-${levelColor}`}>
-        {data.ready ? '✓' : '✗'} {data.ready ? 'READY FOR PRODUCTION' : 'NOT READY FOR PRODUCTION'}
+        {data.ready ? '✓ ' : '✗ '} 
+        {data.ready ? (t('ready') || 'READY FOR PRODUCTION') : t('notReady')}
       </div>
 
-      {/* Risk Level Badge - TEXTO CORRIGIDO AQUI */}
+      {/* Risk Level Badge */}
       <div className="risk-level-section">
-        <span className="risk-label">Risk Level:</span>
+        <span className="risk-label">{t('riskLevel')}:</span>
         <span className={`risk-badge risk-${levelColor}`}>
-          {riskLevelText}
+          {getRiskLevelText()}
         </span>
       </div>
 
       {/* Risk Factors */}
       {data.riskFactors && data.riskFactors.length > 0 && (
         <div className="risk-factors">
-          <div className="section-title">Risk Factors</div>
+          <div className="section-title">{t('riskFactorsTitle')}</div>
           {data.riskFactors.map((factor, index) => (
             <div key={index} className={`risk-factor risk-${factor.severity}`}>
               <div className="risk-factor-header">
                 {getRiskIcon(factor.severity)}
-                <span className="risk-message">{factor.message}</span>
+                {/* Traduzindo o que vem do Banco */}
+                <span className="risk-message">{translateApiText(factor.message)}</span>
               </div>
               {factor.impact && (
-                <div className="risk-impact">{factor.impact}</div>
+                <div className="risk-impact">{translateApiText(factor.impact)}</div>
               )}
             </div>
           ))}
@@ -115,11 +160,13 @@ export default function ReleaseConfidence() {
 
       {/* Recommendation */}
       <div className="release-recommendation">
-        <div className="section-title">Recommendation</div>
-        <p>{data.recommendation}</p>
+        <div className="section-title">{t('recommendationTitle')}</div>
+        {/* Traduzindo o que vem do Banco */}
+        <p>{translateApiText(data.recommendation)}</p>
+        
         {data.estimatedTime && (
           <div className="estimated-time">
-            <strong>Est. time to green:</strong> {data.estimatedTime}
+            <strong>{t('recommendationDesc2').split(':')[0]}:</strong> {data.estimatedTime}
           </div>
         )}
       </div>
@@ -128,7 +175,8 @@ export default function ReleaseConfidence() {
       {data.lastSafeDeploy && (
         <div className="last-safe-deploy">
           <Shield size={14} />
-          <span>Last safe deploy: {data.lastSafeDeploy.label} ({data.lastSafeDeploy.runId})</span>
+          {/* Quebrando a tradução em duas partes para manter as variáveis dinâmicas */}
+          <span>{t('lastSafeDeploy').split(':')[0]}: {data.lastSafeDeploy.label} ({data.lastSafeDeploy.runId})</span>
         </div>
       )}
     </div>

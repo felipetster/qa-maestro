@@ -8,6 +8,7 @@ import RunDetails from './pages/RunDetails';
 import Analytics from './pages/Analytics';
 import './styles/dashboard.css';
 
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Activity, TrendingUp, TrendingDown, Minus, AlertTriangle } from 'lucide-react';
+// 1. Importando o idioma
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function HealthScore() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // 2. Chamando a ferramenta de tradução
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetchHealthScore();
@@ -20,6 +25,29 @@ export default function HealthScore() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // 3. Tradutor Dinâmico para as strings da API
+  const translateApiText = (text) => {
+    if (!text) return "";
+    const map = {
+      // Trends e Signals
+      "Improving": "Melhorando",
+      "Declining": "Piorando",
+      "Stable": "Estável",
+      "Pass rate stable (93%)": "Taxa de sucesso estável (93%)",
+      "Performance stable": "Performance estável",
+      "No failures in last run": "Sem falhas na última execução",
+      // Componentes
+      "Pass Rate": "Taxa de Sucesso",
+      "Stability": "Estabilidade",
+      "Performance": "Performance",
+      // Insights e Ações
+      "Failures concentrated in TC003 - Complete a task": "Falhas concentradas no TC003 - Completar uma tarefa",
+      "1 failures detected": "1 falha detectada",
+      "Monitor next 3 runs for stability": "Monitorar as próximas 3 execuções para estabilidade"
+    };
+    return map[text] || text;
   };
 
   if (loading) {
@@ -47,9 +75,9 @@ export default function HealthScore() {
   };
 
   const getTrendLabel = () => {
-    if (data.trend.direction === 'improving') return 'Improving ↑';
-    if (data.trend.direction === 'declining') return 'Declining ↓';
-    return 'Stable →';
+    if (data.trend.direction === 'improving') return `${translateApiText('Improving')} ↑`;
+    if (data.trend.direction === 'declining') return `${translateApiText('Declining')} ↓`;
+    return `${translateApiText('Stable')} →`;
   };
 
   const getComponentColor = (color) => {
@@ -72,7 +100,8 @@ export default function HealthScore() {
       <div className="health-header">
         <div className="health-header-left">
           <Activity size={18} />
-          <h3>Test Suite Health</h3>
+          {/* TRADUZIDO AQUI */}
+          <h3>{t('testSuiteHealth')}</h3>
         </div>
         <div className={`health-trend-mini trend-${data.trend.direction}`}>
           {getTrendIcon()}
@@ -91,11 +120,13 @@ export default function HealthScore() {
         <div className="health-primary-insight">
           <div className="insight-header">
             <AlertTriangle size={18} />
-            <span>Primary Insight</span>
+            {/* TRADUZIDO AQUI */}
+            <span>{t('primaryInsight')}</span>
           </div>
-          <div className="insight-message">{primaryInsight.message}</div>
+          {/* TRADUZIDO AQUI (API) */}
+          <div className="insight-message">{translateApiText(primaryInsight.message)}</div>
           {primaryInsight.detail && (
-            <div className="insight-detail">{primaryInsight.detail}</div>
+            <div className="insight-detail">{translateApiText(primaryInsight.detail)}</div>
           )}
         </div>
       )}
@@ -103,7 +134,8 @@ export default function HealthScore() {
    {/* Mini Sparkline */}
       {data.trend.data && data.trend.data.length > 0 && (
         <div className="health-mini-sparkline">
-          <span className="sparkline-title">Trend (7 days)</span>
+          {/* TRADUZIDO AQUI */}
+          <span className="sparkline-title">{t('trend7Days')}</span>
           <svg 
             viewBox="0 0 1000 100" 
             className="sparkline-mini" 
@@ -112,10 +144,7 @@ export default function HealthScore() {
           >
             <polyline
               points={data.trend.data.map((d, i) => {
-                // X vai de 0 a 1000 (preenchendo a tela toda)
                 const x = (i / (data.trend.data.length - 1)) * 1000;
-                // Y vai de 10 a 90 (invertido porque no SVG o 0 é no topo)
-                // Isso dá respiro em cima e embaixo para a linha não cortar
                 const y = 100 - d.score; 
                 return `${x},${y}`;
               }).join(' ')}
@@ -129,14 +158,17 @@ export default function HealthScore() {
           </svg>
         </div>
       )}
+      
       {/* Signals como Badges */}
       {data.signals && data.signals.length > 0 && (
         <div className="health-signals-badges">
-          <div className="section-title">Signals</div>
+          {/* TRADUZIDO AQUI */}
+          <div className="section-title">{t('signals')}</div>
           <div className="signals-grid">
             {data.signals.map((signal, index) => (
               <div key={index} className={`signal-badge signal-${signal.type}`}>
-                {signal.message}
+                {/* TRADUZIDO AQUI (API) */}
+                {translateApiText(signal.message)}
               </div>
             ))}
           </div>
@@ -146,10 +178,12 @@ export default function HealthScore() {
       {/* Components Compactos */}
       {data.components && data.components.length > 0 && (
         <div className="health-components-compact">
-          <div className="section-title">Components</div>
+          {/* TRADUZIDO AQUI */}
+          <div className="section-title">{t('componentsTitle')}</div>
           {data.components.map((component, index) => (
             <div key={index} className="component-row">
-              <span className="component-name">{component.name}</span>
+              {/* TRADUZIDO AQUI (API) */}
+              <span className="component-name">{translateApiText(component.name)}</span>
               <div className="component-bar-mini">
                 <div 
                   className="bar-fill"
@@ -168,10 +202,12 @@ export default function HealthScore() {
       {/* Recommended Actions Compactas */}
       {data.actions && data.actions.length > 0 && (
         <div className="health-actions-compact">
-          <div className="section-title">Recommended Actions</div>
+          {/* TRADUZIDO AQUI */}
+          <div className="section-title">{t('recommendedActions')}</div>
           {data.actions.slice(0, 2).map((action, index) => (
             <div key={index} className="action-row">
-              → {action.action}
+              {/* TRADUZIDO AQUI (API) */}
+              → {translateApiText(action.action)}
             </div>
           ))}
         </div>

@@ -1,49 +1,52 @@
-describe('QA Maestro - Task Manager Tests (AI Diagnostic Suite)', () => {
+describe('Sauce Demo - E2E AI Diagnostic Suite', () => {
   
+  // Função auxiliar para fazer login rapidamente nos testes que exigem usuário logado
+  const login = () => {
+    cy.get('[data-test="username"]').type('standard_user');
+    cy.get('[data-test="password"]').type('secret_sauce');
+    cy.get('[data-test="login-button"]').click();
+  };
+
   beforeEach(() => {
-    cy.visit('/');
+    // Aplicação real da Sauce Labs para automação
+    cy.visit('https://www.saucedemo.com/');
   });
 
-  // ✅ TESTE 1: Passa normalmente (Baseline)
-  it('TC001 - Should load the application correctly', () => {
-    cy.contains('QA Maestro').should('be.visible');
-    cy.get('[data-cy="task-input"]').should('be.visible');
-    cy.get('[data-cy="add-button"]').should('be.visible');
+  // ✅ TC001: Passa - Verifica a renderização da tela de login
+  it('TC001 - Should load the login page correctly', () => {
+    cy.get('.login_logo').should('have.text', 'Swag Labs');
+    cy.get('[data-test="username"]').should('be.visible');
+    cy.get('[data-test="login-button"]').should('be.visible');
   });
 
-  // ❌ TESTE 2: Falha por Timing / UI Issue (Timeout)
-  // O que a IA deve detectar: Elemento não visível / UI_Timing
-  it('TC002 - Should display a success toast after adding a task (Timing Issue)', () => {
-    const newTask = 'Task to trigger timeout';
-    cy.get('[data-cy="task-input"]').type(newTask);
-    cy.get('[data-cy="add-button"]').click();
-    
-    // ERRO INTENCIONAL: O frontend não tem toast de sucesso implementado, 
-    // forçando o Cypress a esperar 4 segundos e falhar por timeout de visibilidade.
-    cy.get('[data-cy="toast-success-message"]', { timeout: 4000 }).should('be.visible');
+  // ✅ TC002: Passa - Login com sucesso
+  it('TC002 - Should login successfully with valid credentials', () => {
+    login();
+    cy.url().should('include', '/inventory.html');
+    cy.get('.title').should('have.text', 'Products');
   });
 
-  // ❌ TESTE 3: Falha por Mutação de Seletor (DOM Mismatch)
-  // O que a IA deve detectar: O seletor está errado ou o elemento sumiu
-  it('TC003 - Should complete a task (Selector Mutation Issue)', () => {
-    cy.get('[data-test="task-input"]').type('Task to complete{enter}'); // Erro intencional: data-test ao invés de data-cy
-    
-    // Como a linha de cima vai falhar, ele nem chega no resto, simulando um dev que mudou o atributo no HTML.
-    cy.get('[data-cy="task-item"]').first().find('[data-cy="complete-checkbox"]').click();
+  // ✅ TC003: Passa - Valida bloqueio de usuário
+  it('TC003 - Should display error message for locked out user', () => {
+    cy.get('[data-test="username"]').type('locked_out_user');
+    cy.get('[data-test="password"]').type('secret_sauce');
+    cy.get('[data-test="login-button"]').click();
+    cy.get('[data-test="error"]').should('contain.text', 'Epic sadface: Sorry, this user has been locked out.');
   });
 
-  // ❌ TESTE 4: Falha por Erro de Lógica / Estado (Assertion Error)
-  // O que a IA deve detectar: Diferença entre o esperado (5) e o real (2) / Logic_Error
-  it('TC004 - Should count tasks correctly (Logic Issue)', () => {
-    // Adicionamos apenas 2 tarefas
-    cy.get('[data-cy="task-input"]').type('Task 1');
-    cy.get('[data-cy="add-button"]').click();
-    cy.get('[data-cy="task-input"]').type('Task 2');
-    cy.get('[data-cy="add-button"]').click();
+  // ✅ TC005: Passa - Adiciona item ao carrinho
+  it('TC005 - Should add an item to the shopping cart', () => {
+    login();
+    cy.get('[data-test="add-to-cart-sauce-labs-backpack"]').click();
+    cy.get('.shopping_cart_badge').should('have.text', '1');
+  });
 
-    // ERRO INTENCIONAL: Vamos afirmar que existem 5 tarefas na lista, 
-    // simulando um bug de cálculo de paginação ou filtro.
-    cy.get('[data-cy="task-item"]').should('have.length', 5);
+  // ✅ TC006: Passa - Remove item do carrinho
+  it('TC006 - Should remove an item from the shopping cart', () => {
+    login();
+    cy.get('[data-test="add-to-cart-sauce-labs-backpack"]').click();
+    cy.get('[data-test="remove-sauce-labs-backpack"]').click();
+    cy.get('.shopping_cart_badge').should('not.exist');
   });
 
 });

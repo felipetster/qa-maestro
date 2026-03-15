@@ -1,0 +1,294 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 10,
+    "passes": 6,
+    "pending": 0,
+    "failures": 4,
+    "start": "2026-03-14T00:09:08.447Z",
+    "end": "2026-03-14T00:09:36.058Z",
+    "duration": 27611,
+    "testsRegistered": 10,
+    "passPercent": 60,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "cc080c72-40ab-435b-a4d2-14c0196903c4",
+      "title": "",
+      "fullFile": "cypress\\e2e\\todo.cy.js",
+      "file": "cypress\\e2e\\todo.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "e975e8e0-5680-4094-982a-899c64cdd318",
+          "title": "Sauce Demo - E2E AI Diagnostic Suite",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "TC001 - Should load the login page correctly",
+              "fullTitle": "Sauce Demo - E2E AI Diagnostic Suite TC001 - Should load the login page correctly",
+              "timedOut": null,
+              "duration": 1081,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('.login_logo').should('have.text', 'Swag Labs');\ncy.get('[data-test=\"username\"]').should('be.visible');\ncy.get('[data-test=\"login-button\"]').should('be.visible');",
+              "err": {},
+              "uuid": "352448ef-bd4d-4c68-a78c-4d6c829b6a1e",
+              "parentUUID": "e975e8e0-5680-4094-982a-899c64cdd318",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC002 - Should login successfully with valid credentials",
+              "fullTitle": "Sauce Demo - E2E AI Diagnostic Suite TC002 - Should login successfully with valid credentials",
+              "timedOut": null,
+              "duration": 750,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "login();\ncy.url().should('include', '/inventory.html');\ncy.get('.title').should('have.text', 'Products');",
+              "err": {},
+              "uuid": "132129e0-7965-4e88-9eda-787b3d630056",
+              "parentUUID": "e975e8e0-5680-4094-982a-899c64cdd318",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC003 - Should display error message for locked out user",
+              "fullTitle": "Sauce Demo - E2E AI Diagnostic Suite TC003 - Should display error message for locked out user",
+              "timedOut": null,
+              "duration": 1018,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('[data-test=\"username\"]').type('locked_out_user');\ncy.get('[data-test=\"password\"]').type('secret_sauce');\ncy.get('[data-test=\"login-button\"]').click();\ncy.get('[data-test=\"error\"]').should('contain.text', 'Epic sadface: Sorry, this user has been locked out.');",
+              "err": {},
+              "uuid": "4814c21b-bcf5-42b4-be83-1e694be2771a",
+              "parentUUID": "e975e8e0-5680-4094-982a-899c64cdd318",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC004 - Should display promotional modal after login (Timing Issue)",
+              "fullTitle": "Sauce Demo - E2E AI Diagnostic Suite TC004 - Should display promotional modal after login (Timing Issue)",
+              "timedOut": null,
+              "duration": 4955,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "login();\n// ERRO INTENCIONAL: O site não possui esse banner promocional. \n// O Cypress vai esperar 4 segundos e falhar por timeout.\ncy.get('.promotional-offer-banner', {\n  timeout: 4000\n}).should('be.visible');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `.promotional-offer-banner`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `.promotional-offer-banner`, but never found it.\n    at Context.eval (webpack://todo-app/./cypress/e2e/todo.cy.js:43:59)",
+                "diff": null
+              },
+              "uuid": "c0782630-45ff-4859-bf46-5ca90d21039f",
+              "parentUUID": "e975e8e0-5680-4094-982a-899c64cdd318",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC005 - Should add an item to the shopping cart",
+              "fullTitle": "Sauce Demo - E2E AI Diagnostic Suite TC005 - Should add an item to the shopping cart",
+              "timedOut": null,
+              "duration": 816,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "login();\ncy.get('[data-test=\"add-to-cart-sauce-labs-backpack\"]').click();\ncy.get('.shopping_cart_badge').should('have.text', '1');",
+              "err": {},
+              "uuid": "5a99f8bd-66d3-455c-885f-552ca3bb857b",
+              "parentUUID": "e975e8e0-5680-4094-982a-899c64cdd318",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC006 - Should remove an item from the shopping cart",
+              "fullTitle": "Sauce Demo - E2E AI Diagnostic Suite TC006 - Should remove an item from the shopping cart",
+              "timedOut": null,
+              "duration": 993,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "login();\ncy.get('[data-test=\"add-to-cart-sauce-labs-backpack\"]').click();\ncy.get('[data-test=\"remove-sauce-labs-backpack\"]').click();\ncy.get('.shopping_cart_badge').should('not.exist');",
+              "err": {},
+              "uuid": "c16724e1-1226-4d37-9e6b-5ea1d3dae264",
+              "parentUUID": "e975e8e0-5680-4094-982a-899c64cdd318",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC007 - Should proceed to checkout (Selector Mutation Issue)",
+              "fullTitle": "Sauce Demo - E2E AI Diagnostic Suite TC007 - Should proceed to checkout (Selector Mutation Issue)",
+              "timedOut": null,
+              "duration": 5089,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "login();\ncy.get('[data-test=\"add-to-cart-sauce-labs-backpack\"]').click();\ncy.get('.shopping_cart_link').click(); // Vai para o carrinho\n// ERRO INTENCIONAL: O seletor correto é [data-test=\"checkout\"].\n// Simulamos um dev que mudou o nome do data-test no frontend sem avisar o QA.\ncy.get('[data-test=\"btn-checkout-renamed\"]').click();",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-test=\"btn-checkout-renamed\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-test=\"btn-checkout-renamed\"]`, but never found it.\n    at Context.eval (webpack://todo-app/./cypress/e2e/todo.cy.js:70:7)",
+                "diff": null
+              },
+              "uuid": "345e6dd1-8688-49b4-ae6f-1a0780c9cb6d",
+              "parentUUID": "e975e8e0-5680-4094-982a-899c64cdd318",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC008 - Should open the hamburger menu",
+              "fullTitle": "Sauce Demo - E2E AI Diagnostic Suite TC008 - Should open the hamburger menu",
+              "timedOut": null,
+              "duration": 1138,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "login();\ncy.get('#react-burger-menu-btn').click();\ncy.get('.bm-menu-wrap').should('have.attr', 'aria-hidden', 'false');\ncy.get('#react-burger-cross-btn').click();",
+              "err": {},
+              "uuid": "ba13dbaf-a928-4f8e-acb2-f372a3d875f9",
+              "parentUUID": "e975e8e0-5680-4094-982a-899c64cdd318",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC009 - Should sort products from Z to A",
+              "fullTitle": "Sauce Demo - E2E AI Diagnostic Suite TC009 - Should sort products from Z to A",
+              "timedOut": null,
+              "duration": 4919,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "login();\ncy.get('[data-test=\"product_sort_container\"]').select('za');\n// Valida se o primeiro item agora é a \"Test.allTheThings() T-Shirt\"\ncy.get('.inventory_item_name').first().should('contain.text', 'Test.allTheThings()');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-test=\"product_sort_container\"]`, but never found it.",
+                "estack": "AssertionError: Timed out retrying after 4000ms: Expected to find element: `[data-test=\"product_sort_container\"]`, but never found it.\n    at Context.eval (webpack://todo-app/./cypress/e2e/todo.cy.js:84:7)",
+                "diff": null
+              },
+              "uuid": "d8b1ce01-4442-4cc2-8160-c1a607d1e849",
+              "parentUUID": "e975e8e0-5680-4094-982a-899c64cdd318",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "TC010 - Should calculate total cart items correctly (Logic Issue)",
+              "fullTitle": "Sauce Demo - E2E AI Diagnostic Suite TC010 - Should calculate total cart items correctly (Logic Issue)",
+              "timedOut": null,
+              "duration": 5081,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "login();\n// Adicionamos 2 itens reais\ncy.get('[data-test=\"add-to-cart-sauce-labs-backpack\"]').click();\ncy.get('[data-test=\"add-to-cart-sauce-labs-bike-light\"]').click();\n// ERRO INTENCIONAL: Vamos afirmar que a badge do carrinho tem o número 5,\n// simulando um bug onde a lógica de soma de itens no backend ou UI quebrou.\ncy.get('.shopping_cart_badge').should('have.text', '5');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 4000ms: expected '<span.shopping_cart_badge>' to have text '5', but the text was '2'",
+                "estack": "AssertionError: Timed out retrying after 4000ms: expected '<span.shopping_cart_badge>' to have text '5', but the text was '2'\n    at Context.eval (webpack://todo-app/./cypress/e2e/todo.cy.js:100:35)",
+                "diff": "- '2'\n+ '5'\n"
+              },
+              "uuid": "4c1ddc0b-f9c3-47c2-99e2-a85772acdc78",
+              "parentUUID": "e975e8e0-5680-4094-982a-899c64cdd318",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "352448ef-bd4d-4c68-a78c-4d6c829b6a1e",
+            "132129e0-7965-4e88-9eda-787b3d630056",
+            "4814c21b-bcf5-42b4-be83-1e694be2771a",
+            "5a99f8bd-66d3-455c-885f-552ca3bb857b",
+            "c16724e1-1226-4d37-9e6b-5ea1d3dae264",
+            "ba13dbaf-a928-4f8e-acb2-f372a3d875f9"
+          ],
+          "failures": [
+            "c0782630-45ff-4859-bf46-5ca90d21039f",
+            "345e6dd1-8688-49b4-ae6f-1a0780c9cb6d",
+            "d8b1ce01-4442-4cc2-8160-c1a607d1e849",
+            "4c1ddc0b-f9c3-47c2-99e2-a85772acdc78"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 25840,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/results/json",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "timestamp": "mmddyyyy_HHMMss"
+      },
+      "version": "6.3.2"
+    }
+  }
+}

@@ -36,14 +36,14 @@ async def health_check():
 # ENDPOINT DE ANÁLISE (O CORAÇÃO DA IA)
 # ==========================================================
 @app.post("/api/analyze/run/{run_id}")
-async def analyze_run(run_id: str):
+async def analyze_run(run_id: str, lang: str = "en"): # <-- Parâmetro lang adicionado aqui!
     conn = None
     try:
         db_url = os.getenv('DATABASE_URL', 'postgresql://qauser:qapass123@postgres:5432/qa_maestro')
         conn = psycopg2.connect(db_url)
         cursor = conn.cursor()
 
-        # 1. Busca dados ricos de TODOS os testes da run (para detectar padrões)
+        # 1. Busca dados ricos de TODOS os testes da run
         cursor.execute("""
             SELECT test_name, test_file, status, error_message, duration_ms 
             FROM test_cases 
@@ -55,48 +55,55 @@ async def analyze_run(run_id: str):
         if not failed_tests:
             return {"root_cause": "All tests passed"}
 
-        # 2. Heurística Simples de Padrões (Engineering Logic)
-        error_messages = [t[3] for t in failed_tests]
-        common_error = max(set(error_messages), key=error_messages.count)
-        is_pattern = error_messages.count(common_error) > 1
+        # 2. Instrução de Idioma Dinâmica
+        language_instruction = ""
+        if lang.lower() == "pt-br":
+            language_instruction = """
+INSTRUÇÃO CRÍTICA: Você DEVE gerar os valores do JSON ('root_cause', 'evidence', 'explanation', 'recovery_plan') INTEIRAMENTE em Português do Brasil (pt-BR) de forma técnica e profissional. 
+Mantenha os nomes dos testes (ex: TC004) e termos técnicos de código originais.
+"""
+        else:
+            language_instruction = "Respond entirely in professional English."
 
         # 3. PROMPT DE RACIOCÍNIO (The "Chain of Thought" Prompt)
-        # No main.py, atualize o prompt dentro de analyze_run:
-
-        prompt = f"""You are a Senior Site Reliability Engineer and QA Architect. 
+        prompt = f"""You are a Senior Site Reliability Engineer. 
 Analyze these failures using evidence-based diagnostics.
+
+{language_instruction}
 
 CONTEXT:
 Run ID: {run_id}
-Failed Tests: {len(failed_tests)}
+Total Failed Tests: {len(failed_tests)}
 Data: {chr(10).join([f"TEST: {t[0]} | ERR: {t[3]} | DUR: {t[4]}ms" for t in failed_tests])}
 
 DIAGNOSTIC MANDATE:
-1. Classify the FAILURE_TYPE using this taxonomy: [UI_Timing, Selector_Mutation, API_State_Mismatch, Environment_Instability, Logic_Error].
-2. Identify EVIDENCE: Which specific numbers or strings prove your theory?
-3. Provide TECHNICAL_STEPS: Commands or specific code changes. No generic "review" or "optimize".
+1. You MUST analyze ALL {len(failed_tests)} failed tests, not just the first one.
+2. If there are multiple different errors (e.g. Timeout, Selector, Logic), classify FAILURE_TYPE as "MULTIPLE_FAILURES". If they are the same, classify them normally (e.g., UI_Timing, Selector_Mutation).
+3. ROOT_CAUSE: Summarize ALL the different problems happening in this run.
+4. EVIDENCE: Cite data points from ALL the failing tests (mention their specific test names).
+5. RECOVERY_PLAN: Provide at least one specific technical step for EACH failed test.
 
 RESPONSE FORMAT (JSON):
 {{
   "failure_type": "TYPE_FROM_TAXONOMY",
-  "root_cause": "technical summary",
-  "evidence": "specific data points used",
-  "explanation": "why this happened based on error logs",
-  "is_flaky": true/false,
-  "recovery_plan": ["technical step 1", "technical step 2"],
+  "root_cause": "summary addressing all failed tests",
+  "evidence": "evidence from multiple tests",
+  "explanation": "technical explanation covering all issues",
+  "is_flaky": false,
+  "recovery_plan": ["TC004: step...", "TC007: step...", "TC010: step..."],
   "confidence": 0-100
 }}"""
 
-        print(f"[AI SERVICE] Analyzing pattern for {run_id}...")
+        print(f"[AI SERVICE] Analyzing pattern for {run_id} in {lang.upper()}...")
         ollama_url = os.getenv('OLLAMA_HOST', 'http://host.docker.internal:11434')
         response = requests.post(
             f"{ollama_url}/api/generate",
             json={
                 "model": "llama3.1:8b", 
                 "prompt": prompt, 
-                "format": "json", # Força a IA a responder em JSON puro
+                "format": "json",
                 "stream": False,
-                "options": {"temperature": 0.1} # Menos criatividade, mais precisão
+                "options": {"temperature": 0.1}
             },
             timeout=90
         )

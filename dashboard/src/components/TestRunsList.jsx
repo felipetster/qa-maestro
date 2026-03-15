@@ -1,104 +1,75 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { CheckCircle, XCircle, Clock } from 'lucide-react';
+import { ptBR, enUS } from 'date-fns/locale'; // <-- Importando os idiomas das datas
+import { useLanguage } from '../contexts/LanguageContext';
 
-export default function TestRunsList({ runs, loading }) {
+export default function TestRunsList({ runs }) {
   const navigate = useNavigate();
+  // Puxando o t e a variável language para saber qual idioma a data vai usar
+  const { t, language } = useLanguage();
 
-  if (loading) {
-    return (
-      <div className="loading">
-        <div className="spinner"></div>
-      </div>
-    );
+  if (!runs || runs.length === 0) {
+    return <div className="no-data">No test runs found</div>;
   }
 
-  const getStatusBadge = (status) => {
-    const badges = {
-      passed: { className: 'success', icon: CheckCircle, text: 'Passed' },
-      failed: { className: 'danger', icon: XCircle, text: 'Failed' },
-      running: { className: 'warning', icon: Clock, text: 'Running' }
-    };
-    
-    const badge = badges[status] || badges.running;
-    const Icon = badge.icon;
-    
-    return (
-      <span className={`badge ${badge.className}`}>
-        <Icon size={12} style={{ marginRight: 4 }} />
-        {badge.text}
-      </span>
-    );
-  };
-
-  const calculatePassRate = (passed, total) => {
-    if (total === 0) return '0%';
-    return `${Math.round((passed / total) * 100)}%`;
-  };
-
   return (
-    <div className="card">
-      <div className="card-header">
-        <h3 className="card-title">Recent Test Runs</h3>
-      </div>
-      
-      <div className="table-container">
-        <table>
+    <div className="card test-runs-list">
+      <div className="table-responsive">
+        <table className="table">
           <thead>
             <tr>
-              <th>Run ID</th>
-              <th>Status</th>
-              <th>Tests</th>
-              <th>Pass Rate</th>
-              <th>Duration</th>
-              <th>Browser</th>
-              <th>Environment</th>
-              <th>Started</th>
+              <th>{t('runId')}</th>
+              <th>{t('status')}</th>
+              <th>{t('totalTests')}</th>
+              <th>{t('passRate')}</th>
+              <th>{t('duration')}</th>
+              <th>{t('browser')}</th>
+              <th>{t('environment')}</th>
+              <th>{t('started')}</th>
             </tr>
           </thead>
           <tbody>
-            {runs.map((run) => (
-              <tr 
-                key={run.run_id} 
-                onClick={() => navigate(`/test-runs/${run.run_id}`)}
-                style={{ cursor: 'pointer' }}
-              >
-                <td>
-                  <strong>{run.run_id}</strong>
-                </td>
-                <td>
-                  {getStatusBadge(run.status)}
-                </td>
-                <td>
-                  <span style={{ color: 'var(--success)' }}>{run.passed}</span>
-                  {' / '}
-                  <span style={{ color: 'var(--danger)' }}>{run.failed}</span>
-                  {' / '}
-                  <span style={{ color: 'var(--gray-600)' }}>{run.total_tests}</span>
-                </td>
-                <td>
-                  <strong>{calculatePassRate(run.passed, run.total_tests)}</strong>
-                </td>
-                <td>
-                  {(run.duration_ms / 1000).toFixed(2)}s
-                </td>
-                <td>
-                  {run.browser || 'N/A'}
-                </td>
-                <td>
-                  <span className={`badge ${run.environment === 'production' ? 'danger' : 'info'}`}>
-                    {run.environment || 'dev'}
-                  </span>
-                </td>
-                <td>
-                  {run.started_at 
-                    ? formatDistanceToNow(new Date(run.started_at), { addSuffix: true })
-                    : 'N/A'
-                  }
-                </td>
-              </tr>
-            ))}
+            {runs.map((run) => {
+              const passRate = run.total_tests > 0 
+                ? Math.round((run.passed / run.total_tests) * 100) 
+                : 0;
+                
+              return (
+                <tr 
+                  key={run.run_id} 
+                  onClick={() => navigate(`/test-runs/${run.run_id}`)}
+                  className="clickable-row"
+                >
+                  <td className="font-mono text-sm">{run.run_id}</td>
+                  <td>
+                    <span className={`status-badge status-${run.status}`}>
+                      {run.status === 'passed' ? t('passed') : (run.status === 'failed' ? t('failed') : run.status)}
+                    </span>
+                  </td>
+                  <td>{run.total_tests} / {run.failed} / {run.passed}</td>
+                  <td>
+                    <div className="pass-rate-indicator">
+                      <div 
+                        className={`pass-rate-bar ${passRate === 100 ? 'bg-success' : (passRate > 80 ? 'bg-warning' : 'bg-danger')}`}
+                        style={{ width: `${passRate}%` }}
+                      ></div>
+                      <span>{passRate}%</span>
+                    </div>
+                  </td>
+                  <td>{(run.duration_ms / 1000).toFixed(2)}s</td>
+                  <td className="capitalize">{run.browser}</td>
+                  <td className="capitalize">{run.environment}</td>
+                  <td className="text-gray-500 text-sm">
+                    {/* A MÁGICA DA DATA AQUI */}
+                    {formatDistanceToNow(new Date(run.started_at), { 
+                      addSuffix: true,
+                      locale: language === 'pt-br' ? ptBR : enUS 
+                    })}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

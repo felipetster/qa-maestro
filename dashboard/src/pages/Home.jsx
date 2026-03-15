@@ -7,10 +7,16 @@ import FailureClusters from '../components/FailureClusters';
 import TestStabilityMap from '../components/TestStabilityMap';
 import TestRunsList from '../components/TestRunsList';
 
+// 1. Importando o dicionário
+import { useLanguage } from '../contexts/LanguageContext';
+
 export default function Home() {
   const [stats, setStats] = useState(null);
   const [recentRuns, setRecentRuns] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // 2. Chamando a função "t" (traduzir)
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetchData();
@@ -38,7 +44,8 @@ export default function Home() {
       <div className="main-content">
         <div className="loading">
           <div className="spinner"></div>
-          <span>Loading dashboard...</span>
+          {/* TRADUZIDO AQUI */}
+          <span>{t('loadingDashboard')}</span>
         </div>
       </div>
     );
@@ -54,7 +61,8 @@ export default function Home() {
     <div className="main-content">
       <div className="page-header">
         <h2>QA Maestro</h2>
-        <p>Engineering Intelligence Platform</p>
+        {/* TRADUZIDO AQUI */}
+        <p>{t('engPlatform')}</p>
       </div>
 
       {/* ============================================
@@ -71,7 +79,7 @@ export default function Home() {
             <Activity size={20} />
           </div>
           <div className="snapshot-content">
-            <div className="snapshot-label">Total Tests</div>
+            <div className="snapshot-label">{t('totalTests')}</div>
             <div className="snapshot-value">{totalTests}</div>
           </div>
         </div>
@@ -81,7 +89,7 @@ export default function Home() {
             <CheckCircle size={20} />
           </div>
           <div className="snapshot-content">
-            <div className="snapshot-label">Pass Rate</div>
+            <div className="snapshot-label">{t('passRate')}</div>
             <div className="snapshot-value">{passRate}%</div>
           </div>
         </div>
@@ -91,7 +99,7 @@ export default function Home() {
             <AlertTriangle size={20} />
           </div>
           <div className="snapshot-content">
-            <div className="snapshot-label">Flaky Tests</div>
+            <div className="snapshot-label">{t('flakyTests')}</div>
             <div className="snapshot-value">2</div>
           </div>
         </div>
@@ -101,7 +109,7 @@ export default function Home() {
             <TrendingUp size={20} />
           </div>
           <div className="snapshot-content">
-            <div className="snapshot-label">Health Score</div>
+            <div className="snapshot-label">{t('healthScore')}</div>
             <div className="snapshot-value">89</div>
           </div>
         </div>
@@ -111,8 +119,8 @@ export default function Home() {
           3️⃣ ACTIVE ISSUES (PROBLEMAS DETECTADOS)
           ============================================ */}
       <div className="section-header">
-        <h3>Active Issues</h3>
-        <p>Problems detected automatically</p>
+        <h3>{t('activeIssues')}</h3>
+        <p>{t('problemsDetected')}</p>
       </div>
       <FailureClusters />
 
@@ -120,8 +128,8 @@ export default function Home() {
           4️⃣ TEST SUITE HEALTH (DIAGNÓSTICO)
           ============================================ */}
       <div className="section-header">
-        <h3>Test Suite Health</h3>
-        <p>Quality assessment and insights</p>
+        <h3>{t('testSuiteHealth')}</h3>
+        <p>{t('qualityAssessment')}</p>
       </div>
       <HealthScore />
 
@@ -129,8 +137,8 @@ export default function Home() {
           5️⃣ TEST STABILITY MAP (RISCO ESCONDIDO)
           ============================================ */}
       <div className="section-header">
-        <h3>Test Stability Overview</h3>
-        <p>Risk detection and flaky test analysis</p>
+        <h3>{t('testStability')}</h3>
+        <p>{t('riskDetection')}</p>
       </div>
       <TestStabilityMap />
 
@@ -138,8 +146,8 @@ export default function Home() {
           6️⃣ RECENT RUNS (CONTEXTO OPERACIONAL)
           ============================================ */}
       <div className="section-header">
-        <h3>Recent Test Runs</h3>
-        <p>Execution history and trends</p>
+        <h3>{t('recentTestRuns')}</h3>
+        <p>{t('executionHistory')}</p>
       </div>
       <TestRunsList runs={recentRuns} />
     </div>

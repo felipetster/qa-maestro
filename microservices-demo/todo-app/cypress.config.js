@@ -26,14 +26,14 @@ export default defineConfig({
       on('before:run', async (details) => {
         runId = `run-${Date.now()}`;
         
-        console.log(`\n📊 Creating test run: ${runId}`);
+   console.log(`\n📊 Creating test run: ${runId}`);
         
         try {
           const response = await fetch(`${apiUrl}/api/test-runs`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              runId,
+              run_id: runId,
               browser: details.browser?.name || 'chrome',
               environment: process.env.ENV || 'dev',
               metadata: {
