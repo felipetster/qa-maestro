@@ -1,7 +1,7 @@
--- QA Maestro Database Schema
--- PostgreSQL 15
+-- qa maestro database schema
+-- postgresql 15
 
--- Tabela principal de test runs
+-- tabela principal de test runs
 CREATE TABLE test_runs (
     run_id VARCHAR(100) PRIMARY KEY,
     status VARCHAR(20) DEFAULT 'running',
@@ -20,7 +20,7 @@ CREATE TABLE test_runs (
 CREATE INDEX idx_test_runs_status ON test_runs(status);
 CREATE INDEX idx_test_runs_started ON test_runs(started_at DESC);
 
--- Tabela de casos de teste individuais
+-- tabela de casos de teste individuais
 CREATE TABLE test_cases (
     id SERIAL PRIMARY KEY,
     run_id VARCHAR(100) REFERENCES test_runs(run_id) ON DELETE CASCADE,
@@ -38,7 +38,7 @@ CREATE INDEX idx_test_cases_run_id ON test_cases(run_id);
 CREATE INDEX idx_test_cases_status ON test_cases(status);
 CREATE INDEX idx_test_cases_test_name ON test_cases(test_name);
 
--- Tabela para rastreamento de testes flaky
+-- tabela para rastreamento de testes flaky
 CREATE TABLE flaky_tests (
     test_name VARCHAR(255) PRIMARY KEY,
     total_runs INTEGER DEFAULT 0,
@@ -50,7 +50,7 @@ CREATE TABLE flaky_tests (
 
 CREATE INDEX idx_flaky_tests_score ON flaky_tests(flaky_score DESC);
 
--- Tabela para análises de IA (NOVA - Fase 2)
+-- tabela para analises de ia (nova - fase 2)
 CREATE TABLE ai_analyses (
     id SERIAL PRIMARY KEY,
     run_id VARCHAR(100) REFERENCES test_runs(run_id) ON DELETE CASCADE,
@@ -64,7 +64,7 @@ CREATE TABLE ai_analyses (
 CREATE INDEX idx_ai_analyses_run_id ON ai_analyses(run_id);
 CREATE INDEX idx_ai_analyses_created ON ai_analyses(created_at DESC);
 
--- Dados de exemplo (seed data)
+-- dados de exemplo (seed data)
 INSERT INTO test_runs (run_id, status, total_tests, passed, failed, skipped, duration_ms, browser, environment, started_at, finished_at) VALUES
 ('run-001', 'passed', 10, 10, 0, 0, 12450, 'chrome', 'dev', NOW() - INTERVAL '2 days', NOW() - INTERVAL '2 days'),
 ('run-002', 'failed', 10, 8, 2, 0, 15320, 'chrome', 'staging', NOW() - INTERVAL '1 day', NOW() - INTERVAL '1 day'),

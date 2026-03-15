@@ -6,9 +6,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ============================================
-// HEALTH CHECK
-// ============================================
 app.get('/health', async (req, res) => {
   try {
     await db.query('SELECT 1');
@@ -18,11 +15,7 @@ app.get('/health', async (req, res) => {
   }
 });
 
-// ============================================
-// TEST RUNS ENDPOINTS
-// ============================================
-
-// Get all test runs
+// get all test runs
 app.get('/api/test-runs', async (req, res) => {
   try {
     const result = await db.query(
@@ -35,7 +28,7 @@ app.get('/api/test-runs', async (req, res) => {
   }
 });
 
-// Get single test run with cases
+// get single test run with cases
 app.get('/api/test-runs/:runId', async (req, res) => {
   try {
     const { runId } = req.params;
@@ -64,7 +57,7 @@ app.get('/api/test-runs/:runId', async (req, res) => {
   }
 });
 
-// Create test run
+// create test run
 app.post('/api/test-runs', async (req, res) => {
   try {
     const { run_id, browser, environment } = req.body;
@@ -83,7 +76,7 @@ app.post('/api/test-runs', async (req, res) => {
   }
 });
 
-// Update test run
+// update test run
 app.patch('/api/test-runs/:runId', async (req, res) => {
   try {
     const { runId } = req.params;
@@ -105,7 +98,7 @@ app.patch('/api/test-runs/:runId', async (req, res) => {
   }
 });
 
-// Add test case
+// add test case
 app.post('/api/test-cases', async (req, res) => {
   try {
     const { run_id, test_name, test_file, status, duration_ms, error_message, stack_trace } = req.body;
@@ -124,7 +117,7 @@ app.post('/api/test-cases', async (req, res) => {
   }
 });
 
-// Get stats
+// get stats
 app.get('/api/stats', async (req, res) => {
   try {
     const result = await db.query(`
@@ -143,11 +136,7 @@ app.get('/api/stats', async (req, res) => {
   }
 });
 
-// ============================================
-// AI ANALYSIS ENDPOINTS
-// ============================================
-
-// Get AI analysis for a run
+// get ai analysis for a run
 app.get('/api/test-runs/:runId/analysis', async (req, res) => {
   try {
     const { runId } = req.params;
@@ -171,12 +160,12 @@ app.get('/api/test-runs/:runId/analysis', async (req, res) => {
   }
 });
 
-// Trigger AI analysis
+// trigger ai analysis
 app.post('/api/test-runs/:runId/analyze', async (req, res) => {
   try {
     const { runId } = req.params;
     
-    // Chama AI Service
+    // chama ai service
     const aiResponse = await fetch(`http://ai-service:8000/api/analyze/run/${runId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }

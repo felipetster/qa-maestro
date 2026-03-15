@@ -17,15 +17,15 @@ export const aiApi = axios.create({
   }
 });
 
-// Test Runs
+// test runs
 export const getTestRuns = () => api.get('/api/test-runs');
 export const getTestRun = (runId) => api.get(`/api/test-runs/${runId}`);
 export const getStats = () => api.get('/api/stats');
 
-// AI Analysis
+// ai analysis
 export const getAIAnalysis = (runId) => api.get(`/api/test-runs/${runId}/analysis`);
 export const triggerAIAnalysis = (runId) => api.post(`/api/test-runs/${runId}/analyze`);
 
-// AI Service
+// ai service
 export const getPerformanceTrends = () => aiApi.post('/api/analyze/performance');
 export const getFlakyTests = (testName) => aiApi.post(`/api/analyze/flaky/${testName}`);

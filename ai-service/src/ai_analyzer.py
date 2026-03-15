@@ -70,7 +70,7 @@ class AIAnalyzer:
             failed_tests=failed_tests_text
         )
         
-        # Chama IA
+        # chama ia
         analysis = await self._call_ollama(prompt)
         return analysis
     

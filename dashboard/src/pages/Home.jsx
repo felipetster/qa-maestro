@@ -7,7 +7,7 @@ import FailureClusters from '../components/FailureClusters';
 import TestStabilityMap from '../components/TestStabilityMap';
 import TestRunsList from '../components/TestRunsList';
 
-// 1. Importando o dicionário
+// 1. importando o dicionario
 import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Home() {
@@ -15,7 +15,7 @@ export default function Home() {
   const [recentRuns, setRecentRuns] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // 2. Chamando a função "t" (traduzir)
+  // 2. chamando a funcao "t" (traduzir)
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -44,14 +44,14 @@ export default function Home() {
       <div className="main-content">
         <div className="loading">
           <div className="spinner"></div>
-          {/* TRADUZIDO AQUI */}
+          {/* traduzido aqui */}
           <span>{t('loadingDashboard')}</span>
         </div>
       </div>
     );
   }
 
-  // Calcula métricas do snapshot
+  // calcula metricas do snapshot
   const totalTests = stats?.total_tests || 0;
   const passRate = totalTests > 0 
     ? Math.round((stats.total_passed / totalTests) * 100) 
@@ -61,18 +61,14 @@ export default function Home() {
     <div className="main-content">
       <div className="page-header">
         <h2>QA Maestro</h2>
-        {/* TRADUZIDO AQUI */}
+        {/* traduzido aqui */}
         <p>{t('engPlatform')}</p>
       </div>
 
-      {/* ============================================
-          1️⃣ RELEASE DECISION (PRIMEIRO - MAIS IMPORTANTE)
-          ============================================ */}
+      {/* release decision */}
       <ReleaseConfidence />
 
-      {/* ============================================
-          2️⃣ HEALTH SNAPSHOT (MÉTRICAS RÁPIDAS)
-          ============================================ */}
+      {/* health snapshot */}
       <div className="health-snapshot">
         <div className="snapshot-card">
           <div className="snapshot-icon">

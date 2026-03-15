@@ -32,18 +32,15 @@ async def health_check():
     ai_health = await ai.health_check()
     return {"status": "healthy", "ai": ai_health}
 
-# ==========================================================
-# ENDPOINT DE ANÁLISE (O CORAÇÃO DA IA)
-# ==========================================================
 @app.post("/api/analyze/run/{run_id}")
-async def analyze_run(run_id: str, lang: str = "en"): # <-- Parâmetro lang adicionado aqui!
+async def analyze_run(run_id: str, lang: str = "en"): # <-- parametro lang adicionado aqui!
     conn = None
     try:
         db_url = os.getenv('DATABASE_URL', 'postgresql://qauser:qapass123@postgres:5432/qa_maestro')
         conn = psycopg2.connect(db_url)
         cursor = conn.cursor()
 
-        # 1. Busca dados ricos de TODOS os testes da run
+        # 1. busca dados ricos de todos os testes da run
         cursor.execute("""
             SELECT test_name, test_file, status, error_message, duration_ms 
             FROM test_cases 
@@ -55,7 +52,7 @@ async def analyze_run(run_id: str, lang: str = "en"): # <-- Parâmetro lang adic
         if not failed_tests:
             return {"root_cause": "All tests passed"}
 
-        # 2. Instrução de Idioma Dinâmica
+        # 2. instrucao de idioma dinamica
         language_instruction = ""
         if lang.lower() == "pt-br":
             language_instruction = """
@@ -65,7 +62,7 @@ Mantenha os nomes dos testes (ex: TC004) e termos técnicos de código originais
         else:
             language_instruction = "Respond entirely in professional English."
 
-        # 3. PROMPT DE RACIOCÍNIO (The "Chain of Thought" Prompt)
+        # 3. prompt de raciocinio (the "chain of thought" prompt)
         prompt = f"""You are a Senior Site Reliability Engineer. 
 Analyze these failures using evidence-based diagnostics.
 
@@ -108,7 +105,7 @@ RESPONSE FORMAT (JSON):
             timeout=90
         )
         
-        # O retorno agora é um JSON estruturado
+        # o retorno agora e um json estruturado
         import json
         analysis = json.loads(response.json().get('response', '{}'))
         
