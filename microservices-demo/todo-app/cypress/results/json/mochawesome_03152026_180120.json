@@ -1,0 +1,218 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 6,
+    "passes": 2,
+    "pending": 0,
+    "failures": 4,
+    "start": "2026-03-15T21:01:18.735Z",
+    "end": "2026-03-15T21:01:20.190Z",
+    "duration": 1455,
+    "testsRegistered": 6,
+    "passPercent": 33.33333333333333,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "3f2f45c3-74be-47c0-b47b-55c69449fdfc",
+      "title": "",
+      "fullFile": "cypress\\e2e\\todo.cy.js",
+      "file": "cypress\\e2e\\todo.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "aab02036-a228-4db9-97d2-baa35568b733",
+          "title": "Todo App - Critical Workflows (Failing Scenarios)",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Authentication: Should keep user logged in via valid JWT token",
+              "fullTitle": "Todo App - Critical Workflows (Failing Scenarios) Authentication: Should keep user logged in via valid JWT token",
+              "timedOut": null,
+              "duration": 278,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.wait(200);\nexpect(true).to.be.true;",
+              "err": {},
+              "uuid": "2def714e-a51c-4c0a-b864-217836c92a37",
+              "parentUUID": "aab02036-a228-4db9-97d2-baa35568b733",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "UI Timing: Should display the success toast notification after saving",
+              "fullTitle": "Todo App - Critical Workflows (Failing Scenarios) UI Timing: Should display the success toast notification after saving",
+              "timedOut": null,
+              "duration": 210,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.wait(150);\n// Simulando que o Cypress esperou pelo alerta de sucesso, mas ele não renderizou a tempo\nexpect('.toast-success-message').to.contain('Task saved successfully');",
+              "err": {
+                "message": "AssertionError: expected '.toast-success-message' to include 'Task saved successfully'",
+                "estack": "AssertionError: expected '.toast-success-message' to include 'Task saved successfully'\n    at Context.eval (webpack://todo-app/./cypress/e2e/todo.cy.js:17:40)",
+                "diff": null
+              },
+              "uuid": "993fac33-6d83-4e39-b8ed-8388c11de2a7",
+              "parentUUID": "aab02036-a228-4db9-97d2-baa35568b733",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Business Logic: Should calculate the remaining tasks counter correctly",
+              "fullTitle": "Todo App - Critical Workflows (Failing Scenarios) Business Logic: Should calculate the remaining tasks counter correctly",
+              "timedOut": null,
+              "duration": 165,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.wait(300);\nconst expectedRemainingTasks = 5;\nconst actualRemainingTasks = 4; // O sistema calculou errado\nexpect(actualRemainingTasks, 'Mismatch in active tasks counter').to.equal(expectedRemainingTasks);",
+              "err": {
+                "message": "AssertionError: Mismatch in active tasks counter: expected 4 to equal 5",
+                "estack": "AssertionError: Mismatch in active tasks counter: expected 4 to equal 5\n    at Context.eval (webpack://todo-app/./cypress/e2e/todo.cy.js:26:72)",
+                "diff": "- 4\n+ 5\n"
+              },
+              "uuid": "917f8ea0-e6ea-4d7d-ab95-6715492a1f48",
+              "parentUUID": "aab02036-a228-4db9-97d2-baa35568b733",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "CRUD - Update: Should allow editing an existing task description",
+              "fullTitle": "Todo App - Critical Workflows (Failing Scenarios) CRUD - Update: Should allow editing an existing task description",
+              "timedOut": null,
+              "duration": 323,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.wait(250);\nexpect('updated text').to.equal('updated text');",
+              "err": {},
+              "uuid": "baffb0d2-9cc9-412c-b906-244e71b0198b",
+              "parentUUID": "aab02036-a228-4db9-97d2-baa35568b733",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "API Integration: Should sync local tasks with the legacy backend system",
+              "fullTitle": "Todo App - Critical Workflows (Failing Scenarios) API Integration: Should sync local tasks with the legacy backend system",
+              "timedOut": null,
+              "duration": 164,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.wait(400);\nconst apiResponseStatus = 503;\nconst errorMessage = 'Service Unavailable - Legacy DB connection timed out';\n// Forçando o erro para simular a queda da API\nexpect(apiResponseStatus, errorMessage).to.equal(200);",
+              "err": {
+                "message": "AssertionError: Service Unavailable - Legacy DB connection timed out: expected 503 to equal 200",
+                "estack": "AssertionError: Service Unavailable - Legacy DB connection timed out: expected 503 to equal 200\n    at Context.eval (webpack://todo-app/./cypress/e2e/todo.cy.js:42:47)",
+                "diff": "- 503\n+ 200\n"
+              },
+              "uuid": "0bdc28c4-a76f-4758-b79d-88997a3f9bb5",
+              "parentUUID": "aab02036-a228-4db9-97d2-baa35568b733",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Performance: Search filter should return results under 500ms",
+              "fullTitle": "Todo App - Critical Workflows (Failing Scenarios) Performance: Search filter should return results under 500ms",
+              "timedOut": null,
+              "duration": 172,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.wait(850); // Passou do tempo aceitável\nexpect(850).to.be.lessThan(500, 'Performance degradation detected on search input');",
+              "err": {
+                "message": "AssertionError: Performance degradation detected on search input: expected 850 to be below 500",
+                "estack": "AssertionError: Performance degradation detected on search input: expected 850 to be below 500\n    at Context.eval (webpack://todo-app/./cypress/e2e/todo.cy.js:48:22)",
+                "diff": "- 850\n+ 500\n"
+              },
+              "uuid": "ecdda94b-d8dd-4bf7-bfca-c9ffc0d3b004",
+              "parentUUID": "aab02036-a228-4db9-97d2-baa35568b733",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "2def714e-a51c-4c0a-b864-217836c92a37",
+            "baffb0d2-9cc9-412c-b906-244e71b0198b"
+          ],
+          "failures": [
+            "993fac33-6d83-4e39-b8ed-8388c11de2a7",
+            "917f8ea0-e6ea-4d7d-ab95-6715492a1f48",
+            "0bdc28c4-a76f-4758-b79d-88997a3f9bb5",
+            "ecdda94b-d8dd-4bf7-bfca-c9ffc0d3b004"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 1312,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/results/json",
+        "overwrite": false,
+        "html": false,
+        "json": true,
+        "timestamp": "mmddyyyy_HHMMss"
+      },
+      "version": "6.3.2"
+    }
+  }
+}

@@ -1,52 +1,51 @@
-describe('Sauce Demo - E2E AI Diagnostic Suite', () => {
-  
-  // Função auxiliar para fazer login rapidamente nos testes que exigem usuário logado
-  const login = () => {
-    cy.get('[data-test="username"]').type('standard_user');
-    cy.get('[data-test="password"]').type('secret_sauce');
-    cy.get('[data-test="login-button"]').click();
-  };
+describe('Todo App - Critical Workflows (Failing Scenarios)', () => {
 
   beforeEach(() => {
-    // Aplicação real da Sauce Labs para automação
-    cy.visit('https://www.saucedemo.com/');
+    cy.wait(50); // Simula latência de rede
   });
 
-  // ✅ TC001: Passa - Verifica a renderização da tela de login
-  it('TC001 - Should load the login page correctly', () => {
-    cy.get('.login_logo').should('have.text', 'Swag Labs');
-    cy.get('[data-test="username"]').should('be.visible');
-    cy.get('[data-test="login-button"]').should('be.visible');
+  // 1. Teste que passa (para não ficar 100% vermelho e parecer mais real)
+  it('Authentication: Should keep user logged in via valid JWT token', () => {
+    cy.wait(200);
+    expect(true).to.be.true;
   });
 
-  // ✅ TC002: Passa - Login com sucesso
-  it('TC002 - Should login successfully with valid credentials', () => {
-    login();
-    cy.url().should('include', '/inventory.html');
-    cy.get('.title').should('have.text', 'Products');
+  // 2. Erro Clássico de UI: Elemento não encontrado (Timeout)
+  it('UI Timing: Should display the success toast notification after saving', () => {
+    cy.wait(150);
+    // Simulando que o Cypress esperou pelo alerta de sucesso, mas ele não renderizou a tempo
+    expect('.toast-success-message').to.contain('Task saved successfully');
   });
 
-  // ✅ TC003: Passa - Valida bloqueio de usuário
-  it('TC003 - Should display error message for locked out user', () => {
-    cy.get('[data-test="username"]').type('locked_out_user');
-    cy.get('[data-test="password"]').type('secret_sauce');
-    cy.get('[data-test="login-button"]').click();
-    cy.get('[data-test="error"]').should('contain.text', 'Epic sadface: Sorry, this user has been locked out.');
+  // 3. Erro de Regra de Negócio: Cálculo de valores/estado incorreto
+  it('Business Logic: Should calculate the remaining tasks counter correctly', () => {
+    cy.wait(300);
+    const expectedRemainingTasks = 5;
+    const actualRemainingTasks = 4; // O sistema calculou errado
+    
+    expect(actualRemainingTasks, 'Mismatch in active tasks counter').to.equal(expectedRemainingTasks);
   });
 
-  // ✅ TC005: Passa - Adiciona item ao carrinho
-  it('TC005 - Should add an item to the shopping cart', () => {
-    login();
-    cy.get('[data-test="add-to-cart-sauce-labs-backpack"]').click();
-    cy.get('.shopping_cart_badge').should('have.text', '1');
+  // 4. Teste que passa
+  it('CRUD - Update: Should allow editing an existing task description', () => {
+    cy.wait(250);
+    expect('updated text').to.equal('updated text');
   });
 
-  // ✅ TC006: Passa - Remove item do carrinho
-  it('TC006 - Should remove an item from the shopping cart', () => {
-    login();
-    cy.get('[data-test="add-to-cart-sauce-labs-backpack"]').click();
-    cy.get('[data-test="remove-sauce-labs-backpack"]').click();
-    cy.get('.shopping_cart_badge').should('not.exist');
+  // 5. Erro de API: Integração com serviço externo falhou (503 Service Unavailable)
+  it('API Integration: Should sync local tasks with the legacy backend system', () => {
+    cy.wait(400);
+    const apiResponseStatus = 503;
+    const errorMessage = 'Service Unavailable - Legacy DB connection timed out';
+    
+    // Forçando o erro para simular a queda da API
+    expect(apiResponseStatus, errorMessage).to.equal(200);
+  });
+
+  // 6. Teste demorado (Performance issue)
+  it('Performance: Search filter should return results under 500ms', () => {
+    cy.wait(850); // Passou do tempo aceitável
+    expect(850).to.be.lessThan(500, 'Performance degradation detected on search input');
   });
 
 });

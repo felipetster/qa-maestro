@@ -164,6 +164,27 @@ The **Test Stability Map** shows which tests are reliable vs. flaky, helping pri
 
 ---
 
+## Screenshots
+
+### 1. Executive View (Release Confidence)
+*Algorithmic assessment of deployment readiness (Passing vs. Failing scenarios).*
+![Release Confidence - Ready](assets/dashboard-home.png)
+![Release Confidence - Not Ready](assets/dashboard-home-not-ready.png)
+
+### 2. AI Diagnostic Engine
+*LLaMA 3.1 analyzing test failures and generating technical recovery plans.*
+![AI Diagnostics](assets/dashboard-ai.png)
+
+### 3. Test Stability & Health
+*Flaky test detection, execution history, and suite health monitoring.*
+![Test Stability Map](assets/dashboard-tests-stability-home.png)
+![Test Suite Health](assets/dashboard-others-features-home.png)
+
+### 4. Advanced Analytics
+*Performance trends and test behavior over time.*
+![Analytics](assets/dashboard-analytics.png)
+
+
 ## Configuration
 
 ### Environment Variables

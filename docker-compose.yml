@@ -51,7 +51,6 @@ services:
       - /app/node_modules
 
   # AI Service
- # AI Service
   ai-service:
     build: ./ai-service
     container_name: qa-maestro-ai
@@ -60,14 +59,17 @@ services:
     environment:
       - DATABASE_URL=postgresql://qauser:qapass123@postgres:5432/qa_maestro
       - OLLAMA_HOST=http://host.docker.internal:11434
+      - PYTHONUNBUFFERED=1
     volumes:
       - ./ai-service:/app
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     networks:
       - qa-network
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
   # Dashboard React (NOVO - Fase 3)
   dashboard:
     build: ./dashboard

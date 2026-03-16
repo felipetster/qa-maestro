@@ -164,6 +164,26 @@ O **Test Stability Map** mostra quais testes são confiáveis vs. flaky, ajudand
 
 ---
 
+## Screenshots
+
+### 1. Visão Executiva (Score de Confiança)
+*Avaliação algorítmica de prontidão para deploy (Cenários de Aprovação vs. Bloqueio).*
+![Release Confidence - Ready](assets/dashboard-home.png)
+![Release Confidence - Not Ready](assets/dashboard-home-not-ready.png)
+
+### 2. Motor de Diagnóstico com IA
+*LLaMA 3.1 analisando falhas nos testes e gerando planos de recuperação técnicos.*
+![AI Diagnostics](assets/dashboard-ai.png)
+
+### 3. Estabilidade e Saúde dos Testes
+*Detecção de testes flaky, histórico de execuções e monitoramento da saúde da suíte.*
+![Test Stability Map](assets/dashboard-tests-stability-home.png)
+![Test Suite Health](assets/dashboard-others-features-home.png)
+
+### 4. Analytics Avançado
+*Tendências de performance e comportamento dos testes ao longo do tempo.*
+![Analytics](assets/dashboard-analytics.png)
+
 ## Configuração
 
 ### Variáveis de Ambiente

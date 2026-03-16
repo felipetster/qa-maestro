@@ -50,15 +50,16 @@ CREATE TABLE flaky_tests (
 
 CREATE INDEX idx_flaky_tests_score ON flaky_tests(flaky_score DESC);
 
--- tabela para analises de ia (nova - fase 2)
-CREATE TABLE ai_analyses (
+-- tabela para analises de ia (nova - atualizada)
+CREATE TABLE IF NOT EXISTS ai_analyses (
     id SERIAL PRIMARY KEY,
-    run_id VARCHAR(100) REFERENCES test_runs(run_id) ON DELETE CASCADE,
-    analysis_type VARCHAR(50) DEFAULT 'test_run',
-    analysis_text TEXT NOT NULL,
-    severity VARCHAR(20),
-    recommendations JSONB,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    run_id VARCHAR(255) NOT NULL,
+    summary TEXT,
+    root_cause TEXT,
+    recommendation TEXT,
+    confidence INTEGER DEFAULT 50,
+    created_at TIMESTAMP DEFAULT NOW(),
+    FOREIGN KEY (run_id) REFERENCES test_runs(run_id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_ai_analyses_run_id ON ai_analyses(run_id);

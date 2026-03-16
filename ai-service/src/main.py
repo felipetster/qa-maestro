@@ -33,14 +33,16 @@ async def health_check():
     return {"status": "healthy", "ai": ai_health}
 
 @app.post("/api/analyze/run/{run_id}")
-async def analyze_run(run_id: str, lang: str = "en"): # <-- parametro lang adicionado aqui!
+async def analyze_run(run_id: str, lang: str = "en"):
     conn = None
     try:
+        print(f"[AI SERVICE] 🔍 Starting analysis for {run_id} in {lang}...")
+        
         db_url = os.getenv('DATABASE_URL', 'postgresql://qauser:qapass123@postgres:5432/qa_maestro')
         conn = psycopg2.connect(db_url)
         cursor = conn.cursor()
 
-        # 1. busca dados ricos de todos os testes da run
+        # Busca dados da run
         cursor.execute("""
             SELECT test_name, test_file, status, error_message, duration_ms 
             FROM test_cases 
@@ -49,71 +51,154 @@ async def analyze_run(run_id: str, lang: str = "en"): # <-- parametro lang adici
         all_tests = cursor.fetchall()
         
         failed_tests = [t for t in all_tests if t[2] == 'failed']
+        
         if not failed_tests:
-            return {"root_cause": "All tests passed"}
+            cursor.close()
+            conn.close()
+            return {
+                "root_cause": "All tests passed" if lang == "en" else "Todos os testes passaram",
+                "failure_type": "NONE",
+                "evidence": "",
+                "explanation": "",
+                "is_flaky": False,
+                "recovery_plan": [],
+                "confidence": 100
+            }
 
-        # 2. instrucao de idioma dinamica
-        language_instruction = ""
-        if lang.lower() == "pt-br":
-            language_instruction = """
-INSTRUÇÃO CRÍTICA: Você DEVE gerar os valores do JSON ('root_cause', 'evidence', 'explanation', 'recovery_plan') INTEIRAMENTE em Português do Brasil (pt-BR) de forma técnica e profissional. 
-Mantenha os nomes dos testes (ex: TC004) e termos técnicos de código originais.
-"""
-        else:
-            language_instruction = "Respond entirely in professional English."
-
-        # 3. prompt de raciocinio (the "chain of thought" prompt)
-        prompt = f"""You are a Senior Site Reliability Engineer. 
+        # Monta prompt
+        prompt = f"""You are a Senior Site Reliability Engineer and QA Architect. 
 Analyze these failures using evidence-based diagnostics.
-
-{language_instruction}
 
 CONTEXT:
 Run ID: {run_id}
-Total Failed Tests: {len(failed_tests)}
+Failed Tests: {len(failed_tests)}
 Data: {chr(10).join([f"TEST: {t[0]} | ERR: {t[3]} | DUR: {t[4]}ms" for t in failed_tests])}
 
 DIAGNOSTIC MANDATE:
-1. You MUST analyze ALL {len(failed_tests)} failed tests, not just the first one.
-2. If there are multiple different errors (e.g. Timeout, Selector, Logic), classify FAILURE_TYPE as "MULTIPLE_FAILURES". If they are the same, classify them normally (e.g., UI_Timing, Selector_Mutation).
-3. ROOT_CAUSE: Summarize ALL the different problems happening in this run.
-4. EVIDENCE: Cite data points from ALL the failing tests (mention their specific test names).
-5. RECOVERY_PLAN: Provide at least one specific technical step for EACH failed test.
+1. Classify the FAILURE_TYPE using this taxonomy: [UI_Timing, Selector_Mutation, API_State_Mismatch, Environment_Instability, Logic_Error].
+2. Identify EVIDENCE: Which specific numbers or strings prove your theory?
+3. Provide TECHNICAL_STEPS: Commands or specific code changes. No generic "review" or "optimize".
 
 RESPONSE FORMAT (JSON):
 {{
   "failure_type": "TYPE_FROM_TAXONOMY",
-  "root_cause": "summary addressing all failed tests",
-  "evidence": "evidence from multiple tests",
-  "explanation": "technical explanation covering all issues",
-  "is_flaky": false,
-  "recovery_plan": ["TC004: step...", "TC007: step...", "TC010: step..."],
+  "root_cause": "technical summary",
+  "evidence": "specific data points used",
+  "explanation": "why this happened based on error logs",
+  "is_flaky": true/false,
+  "recovery_plan": ["technical step 1", "technical step 2"],
   "confidence": 0-100
 }}"""
 
-        print(f"[AI SERVICE] Analyzing pattern for {run_id} in {lang.upper()}...")
+        print(f"[AI SERVICE] 📊 Calling Ollama with model llama3.2:3b...")
+        
         ollama_url = os.getenv('OLLAMA_HOST', 'http://host.docker.internal:11434')
+        
         response = requests.post(
             f"{ollama_url}/api/generate",
             json={
-                "model": "llama3.1:8b", 
+                "model": "llama3.2:3b", 
                 "prompt": prompt, 
                 "format": "json",
                 "stream": False,
-                "options": {"temperature": 0.1}
+                "options": {
+                    "temperature": 0.1,
+                    "num_predict": 500
+                }
             },
-            timeout=90
+            timeout=120
         )
         
-        # o retorno agora e um json estruturado
+        print(f"[AI SERVICE] ✅ Ollama responded with status: {response.status_code}")
+        
+        if response.status_code != 200:
+            print(f"[AI SERVICE] ❌ Ollama error: {response.text}")
+            raise HTTPException(status_code=500, detail=f"Ollama error: {response.text}")
+        
+        # Parse resposta
         import json
-        analysis = json.loads(response.json().get('response', '{}'))
+        ollama_response = response.json()
+        raw_text = ollama_response.get('response', '{}')
+        
+        print(f"[AI SERVICE] 📝 Raw response: {raw_text[:200]}...")
+        
+        # Tenta parse direto
+        try:
+            analysis = json.loads(raw_text)
+        except json.JSONDecodeError:
+            # Se falhar, extrai JSON do texto
+            import re
+            json_match = re.search(r'\{.*\}', raw_text, re.DOTALL)
+            if json_match:
+                analysis = json.loads(json_match.group())
+            else:
+                analysis = {
+                    "failure_type": "UNDEFINED",
+                    "root_cause": "Unable to parse AI response",
+                    "evidence": raw_text[:200],
+                    "explanation": "AI analysis failed to produce valid JSON",
+                    "is_flaky": False,
+                    "recovery_plan": ["Review test logs manually"],
+                    "confidence": 30
+                }
+        
+        # Valida campos obrigatórios
+        required_fields = ["failure_type", "root_cause", "recovery_plan"]
+        for field in required_fields:
+            if field not in analysis:
+                analysis[field] = "Unknown" if field != "recovery_plan" else []
+        
+        # Salva no banco
+        cursor.execute("""
+            INSERT INTO ai_analyses (run_id, summary, root_cause, recommendation, confidence)
+            VALUES (%s, %s, %s, %s, %s)
+            RETURNING id
+        """, (
+            run_id,
+            f"Analysis of {len(failed_tests)} failed tests",
+            analysis.get('root_cause', 'Unknown'),
+            analysis.get('recovery_plan', ['No recommendations'])[0] if analysis.get('recovery_plan') else 'No recommendations',
+            analysis.get('confidence', 50)
+        ))
+        
+        conn.commit()
+        analysis_id = cursor.fetchone()[0]
         
         cursor.close()
         conn.close()
         
-        return analysis
-
+        print(f"[AI SERVICE] ✅ Analysis completed successfully: ID {analysis_id}")
+        
+        # Retorna para frontend
+        return {
+            "id": analysis_id,
+            "run_id": run_id,
+            "failure_type": analysis.get("failure_type", "UNDEFINED"),
+            "root_cause": analysis.get("root_cause", "Unknown"),
+            "evidence": analysis.get("evidence", "No evidence provided"),
+            "explanation": analysis.get("explanation", "No explanation available"),
+            "is_flaky": analysis.get("is_flaky", False),
+            "recovery_plan": analysis.get("recovery_plan", []),
+            "confidence": analysis.get("confidence", 50)
+        }
+        
+    except requests.Timeout:
+        if conn:
+            conn.close()
+        print(f"[AI SERVICE] ❌ TIMEOUT: Ollama took too long")
+        raise HTTPException(status_code=504, detail="AI analysis timeout")
+        
+    except psycopg2.Error as e:
+        if conn:
+            conn.close()
+        print(f"[AI SERVICE] ❌ DATABASE ERROR: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+        
     except Exception as e:
-        if conn: conn.close()
+        if conn:
+            conn.close()
+        import traceback
+        print(f"[AI SERVICE] ❌ UNEXPECTED ERROR: {str(e)}")
+        print(f"[AI SERVICE] ❌ FULL TRACEBACK:")
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
